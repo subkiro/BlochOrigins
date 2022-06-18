@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732f5d2e73908db468f6ab84de8a17b6, type: 3}
+  m_Name: Floor_S
+  m_EditorClassIdentifier: 
+  ID: S
+  model: {fileID: 6615571635418423782, guid: 4aa4d418ccc6046cdb58d80dcac7e631, type: 3}
+  floorType: 3

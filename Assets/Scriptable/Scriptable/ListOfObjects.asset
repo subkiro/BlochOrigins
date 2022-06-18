@@ -17,3 +17,6 @@ MonoBehaviour:
   AllPlates:
   - {fileID: 11400000, guid: d8670071e857b452186ba372218cddfb, type: 2}
   - {fileID: 11400000, guid: 9282071955c7f4808b9fd220c00691fa, type: 2}
+  - {fileID: 11400000, guid: ab4b9153e27b5410096681137a7fb4e1, type: 2}
+  - {fileID: 11400000, guid: 34d8c939e02e94c3bb61a4b52dd2dddc, type: 2}
+  - {fileID: 11400000, guid: 2bc41fc434d3e4d54944322703cc9fc2, type: 2}

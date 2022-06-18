@@ -12,13 +12,15 @@ public  class LevelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        DOTween.SetTweensCapacity(500, 50);
     }
     // Start is called before the first frame update
     void Start()
     {
         //grid = new GenericGrid<GridObject>(10, 10,10, 10, Vector3.zero, (GenericGrid<GridObject> g, int x, int y) => new GridObject(g,x,y));y
         grid = CreateGrid(listOfObjects.AllLevels[0]);
-        FillGrid(grid, listOfObjects.AllLevels[0]);
+        grid = FillGrid(grid, listOfObjects.AllLevels[0]);
+        AnimateGirid(grid);
 
     }
 
@@ -33,7 +35,7 @@ public  class LevelManager : MonoBehaviour
         Debug.Log($"X: {tmpGrid.width}, Y: {tmpGrid.height}");
         return tmpGrid;
     }
-    public void FillGrid(GenericGrid<GridObject> grid, LevelSO level)
+    public GenericGrid<GridObject> FillGrid(GenericGrid<GridObject> grid, LevelSO level)
     {
 
         
@@ -56,10 +58,29 @@ public  class LevelManager : MonoBehaviour
                 
             }
         }
+        return grid;
+    }
+    public void AnimateGirid(GenericGrid<GridObject> grid) {
+
+        for (int x = 0; x < grid.width; x++)
+        {
+            for (int y = 0; y < grid.height; y++)
+            {
+                float delayValue = (2 * x + y)*.1f;
+                Plate floorPlate = grid.GetGridObject(x, y).GetPlate();
+                Color brown = floorPlate.GetComponent<MeshRenderer>().materials[0].color;
+                Color green = floorPlate.GetComponent<MeshRenderer>().materials[1].color;
+                floorPlate.GetComponent<MeshRenderer>().materials[0].DOColor(brown, Random.Range(.5f, 1f)).From(Color.white);
+                floorPlate.GetComponent<MeshRenderer>().materials[1].DOColor(green, Random.Range(.2f, 1f)).From(Color.white).SetDelay(1);
+                floorPlate.transform.DOMoveY(0, Random.Range(1, 2)).From(10).SetEase(Ease.OutBounce).SetDelay(delayValue);
+
+            }
+        }
 
     }
 
 }
+
 
 public class GridObject
 {
@@ -71,7 +92,7 @@ public class GridObject
     public void SetPlate(FloorPlateSO plateSO) {
         floorPlate = plateSO.CreatePlate(grid, x,y);
     }
-
+    public Plate GetPlate() => floorPlate;
 
     public GridObject(GenericGrid<GridObject> grid, int x, int y) {
         this.grid = grid;
@@ -79,9 +100,6 @@ public class GridObject
         this.y = y;
     }
 
-   
 
-
-  
 
 }

@@ -16,7 +16,7 @@ MonoBehaviour:
   isCompleted: 0
   level: 'XXXXXXXXXX
 
-    X________X
+    X_______FX
 
     X________X
 
@@ -26,6 +26,6 @@ MonoBehaviour:
 
     X________X
 
-    X________X
+    XS_______X
 
     XXXXXXXXXX'
