@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public  class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
-    public GenericGrid<FloorObj> grid;
-    public GameObject Floor1_prefab;
+    public GenericGrid<GridObject> grid;
+    public ListOfObjects listOfObjects;
     private void Awake()
     {
         instance = this;
@@ -15,45 +16,72 @@ public  class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        grid = new GenericGrid<FloorObj>(10, 10,10, 10, Vector3.zero, (GenericGrid<FloorObj> g, int x, int y) => new FloorObj(g,x,y));
+        //grid = new GenericGrid<GridObject>(10, 10,10, 10, Vector3.zero, (GenericGrid<GridObject> g, int x, int y) => new GridObject(g,x,y));y
+        grid = CreateGrid(listOfObjects.AllLevels[0]);
+        FillGrid(grid, listOfObjects.AllLevels[0]);
 
     }
 
 
-   
+    public GenericGrid<GridObject>  CreateGrid(LevelSO level)
+    {
+
+        int x = level.X;
+        int y = level.Y;
+
+        GenericGrid<GridObject> tmpGrid = new GenericGrid<GridObject>(x, y, 10f, 10f, new Vector3(-x / 2, -y / 2, 0), (GenericGrid<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        Debug.Log($"X: {tmpGrid.width}, Y: {tmpGrid.height}");
+        return tmpGrid;
+    }
+    public void FillGrid(GenericGrid<GridObject> grid, LevelSO level)
+    {
+
+        
+        char[,] lvl = level.GetLevelArray();
+        Debug.Log($"lvl array X: {lvl.GetLength(0)}");
+
+        List<FloorPlateSO> plates = listOfObjects.AllPlates;
+
+
+
+        for (int x = 0; x < level.X; x++)
+        {
+            for (int y = 0; y < level.Y; y++)
+            {
+                char plateID = lvl[x,y];
+                Debug.Log(plateID);
+
+                FloorPlateSO plateSO = plates.FirstOrDefault(x => x.ID == plateID.ToString());
+                grid.GetGridObject(x, y).SetPlate(plateSO);
+                
+            }
+        }
+
+    }
 
 }
 
-public class FloorObj
+public class GridObject
 {
-    int value;
-    GenericGrid<FloorObj> grid;
-    GameObject obj;
+    GenericGrid<GridObject> grid;
+    int x, y;
+    Plate floorPlate;
 
-    public void AddValue(int addValue) {
-        value += addValue;
+
+    public void SetPlate(FloorPlateSO plateSO) {
+        floorPlate = plateSO.CreatePlate(grid, x,y);
     }
 
-    public FloorObj(GenericGrid<FloorObj> grid, int x, int y) {
+
+    public GridObject(GenericGrid<GridObject> grid, int x, int y) {
         this.grid = grid;
-        obj= GameObject.Instantiate(LevelManager.instance.Floor1_prefab);
-        obj.transform.SetParent(LevelManager.instance.transform);
-        obj.transform.localPosition = new Vector3(x, 0, y);
-        AddValue(2*x + y);
-        Animate();
+        this.x = x;
+        this.y = y;
     }
 
-    public void Animate() {
-        Color brown = obj.GetComponent<MeshRenderer>().materials[0].color;
-        Color green = obj.GetComponent<MeshRenderer>().materials[1].color;
+   
 
 
-        obj.GetComponent<MeshRenderer>().materials[0].DOColor(brown, .3f).From(Color.white);
-        
-        obj.GetComponent<MeshRenderer>().materials[1].DOColor(green, Random.Range(.2f, .3f)).From(Color.white).SetDelay(1);
-
-        obj.transform.DOMoveY(0, Random.Range(1, 2)).From(10).SetEase(Ease.OutBounce).SetDelay(value*0.1f);
-
-    }
+  
 
 }
