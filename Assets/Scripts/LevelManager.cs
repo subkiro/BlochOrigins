@@ -85,7 +85,7 @@ public  class LevelManager : MonoBehaviour
 public class GridObject
 {
     GenericGrid<GridObject> grid;
-    int x, y;
+    public int x, y;
     Plate floorPlate;
 
 

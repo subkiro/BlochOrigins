@@ -38,10 +38,20 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOLocalJump(Vector3.zero,1,1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed/2, 1, .2f).SetEase(Ease.InFlash));
-        s.OnComplete(() => isActing = false);
+        s.OnComplete(() => {
+            isActing = false;
+            UnitPositionInGrid();
+        });
+
+
     }
 
 
+    public void UnitPositionInGrid() {
 
+        GridObject gridObject =   LevelManager.instance.grid.GetGridObject((int)this.transform.position.x, (int)this.transform.position.z);
+        if (gridObject == null) return;
+        Debug.Log($"Im on: {gridObject.GetPlate().ID}  x: {gridObject.x} y: {gridObject.y}");
+    }
 
 }
