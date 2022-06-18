@@ -27,10 +27,17 @@ public class Unit : MonoBehaviour
                     direction == Tools.Directions.LEFT ? Vector3.left :
                     Vector3.right, moveSpeed).SetRelative().SetEase(Ease.InFlash));
 
+        s.Join(PlayerModel.DOLocalRotate(
+                    direction == Tools.Directions.FORWORD? new Vector3(0, 0, 0) : 
+                    direction == Tools.Directions.BACK ? PlayerModel.localRotation.y!=180? new Vector3(0, 180, 0) : new Vector3(0, 0, 0) :
+                    direction == Tools.Directions.LEFT ? PlayerModel.localRotation.y!=-90? new Vector3(0, -90, 0) : new Vector3(0, 0, 0) :
+                    direction == Tools.Directions.RIGHT ? PlayerModel.localRotation.y != 90 ? new Vector3(0, 90, 0): new Vector3(0, 0, 0) :
+                    new Vector3(0, 0, 0), moveSpeed).SetEase(Ease.InFlash));
+
 
         s.Join(PlayerModel.DOLocalJump(Vector3.zero,1,1, moveSpeed).SetEase(Ease.InFlash));
-        s.Join(PlayerModel.DOPunchScale(new Vector3(0, 0, 1), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
-        s.Append(PlayerModel.DOPunchScale(new Vector3(0, 0, -.3f), moveSpeed/2, 1, .2f).SetEase(Ease.InFlash));
+        s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
+        s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed/2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => isActing = false);
     }
 
