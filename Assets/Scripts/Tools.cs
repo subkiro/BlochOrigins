@@ -9,12 +9,14 @@ public class Tools : MonoBehaviour
     {
         WALKABLE, NONWOKABLE, EMPTY ,START, FINISH, EVENT
     }
+
+    public enum Directions {
+        FORWORD,BACK,LEFT,RIGHT
+    }
     #endregion
 
 
     #region CLASSES
-    public class Direction {
-
-    }
+    
     #endregion
 }

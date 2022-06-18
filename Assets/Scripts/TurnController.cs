@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Unit PlayerUnit;
+
+
+    public void OnMove(Tools.Directions direction)
     {
-        
+        PlayerUnit.Move(direction);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        InputManager.OnMove += OnMove;
+    }
+    private void OnDisable()
+    {
+        InputManager.OnMove -= OnMove;
     }
 }
