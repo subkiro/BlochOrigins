@@ -10,4 +10,11 @@ public class Tools : MonoBehaviour
         WALKABLE, NONWOKABLE, EMPTY ,START, FINISH, EVENT
     }
     #endregion
+
+
+    #region CLASSES
+    public class Direction {
+
+    }
+    #endregion
 }
