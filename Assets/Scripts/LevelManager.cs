@@ -66,8 +66,11 @@ public  class LevelManager : MonoBehaviour
         {
             for (int y = 0; y < grid.height; y++)
             {
+
                 float delayValue = (2 * x + y)*.1f;
                 Plate floorPlate = grid.GetGridObject(x, y).GetPlate();
+                if (floorPlate.floorType == Tools.FloorType.EMPTY) continue;
+
                 Color brown = floorPlate.GetComponent<MeshRenderer>().materials[0].color;
                 Color green = floorPlate.GetComponent<MeshRenderer>().materials[1].color;
                 floorPlate.GetComponent<MeshRenderer>().materials[0].DOColor(brown, Random.Range(.5f, 1f)).From(Color.white);

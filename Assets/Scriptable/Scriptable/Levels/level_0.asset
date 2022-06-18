@@ -14,18 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelID: 0
   isCompleted: 0
-  level: 'XXXXXXXXXX
+  level: 'EEXXXXXXXEE
 
-    X_______FX
+    EEXS___SXEE
 
-    X________X
+    EEX_____XEE
 
-    X________X
+    EXXXX_XXXXE
 
-    X________X
+    X_________X
 
-    X________X
+    X_________X
 
-    XS_______X
+    X___XX____X
 
-    XXXXXXXXXX'
+    X____XX___X
+
+    X_________X
+
+    X_________X
+
+    X_________X
+
+    X________FX
+
+    XXXXXXXXXXX'

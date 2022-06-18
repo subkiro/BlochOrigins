@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Floor_E
   m_EditorClassIdentifier: 
   ID: E
-  model: {fileID: 6615571635418423782, guid: 00ca9a703b813461bb3c53601027124a, type: 3}
-  floorType: 1
+  model: {fileID: 6615571635418423782, guid: e5472ea9eccaa460cad16e31ca9e260c, type: 3}
+  floorType: 2
