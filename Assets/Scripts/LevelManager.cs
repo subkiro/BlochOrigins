@@ -8,18 +8,22 @@ public  class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
     public GenericGrid<GridObject> grid;
-    public ListOfObjects listOfObjects;
+
+    private LevelSO m_CurrentLevel;
+    private List<FloorPlateSO> m_AllPlates;
     private void Awake()
     {
         instance = this;
         DOTween.SetTweensCapacity(500, 50);
     }
     // Start is called before the first frame update
-    void Start()
+    public void GenerateLevel(LevelSO level,List<FloorPlateSO> AllPlates)
     {
-        //grid = new GenericGrid<GridObject>(10, 10,10, 10, Vector3.zero, (GenericGrid<GridObject> g, int x, int y) => new GridObject(g,x,y));y
-        grid = CreateGrid(listOfObjects.AllLevels[0]);
-        grid = FillGrid(grid, listOfObjects.AllLevels[0]);
+        m_CurrentLevel = level;
+        m_AllPlates = AllPlates;
+
+        grid = CreateGrid(level);
+        grid = FillGrid(grid, level);
         AnimateGirid(grid);
 
     }
@@ -42,7 +46,7 @@ public  class LevelManager : MonoBehaviour
         char[,] lvl = level.GetLevelArray();
         Debug.Log($"lvl array X: {lvl.GetLength(0)}");
 
-        List<FloorPlateSO> plates = listOfObjects.AllPlates;
+        List<FloorPlateSO> plates = m_AllPlates;
 
 
 
@@ -81,7 +85,9 @@ public  class LevelManager : MonoBehaviour
         }
 
     }
-
+    public Vector3 GetPlayerStartPosition(Unit player) {
+        return m_CurrentLevel.GetPlatePositionByID(player.isNpc ? 'N' : 'S');
+    }
 }
 
 

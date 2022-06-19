@@ -6,7 +6,7 @@ public class ListOfObjects : ScriptableObject
 {
     public List<LevelSO> AllLevels;
     public List<FloorPlateSO> AllPlates;
-
+    public List<PlayerSO> AllPlayerModels;
 
 
 }

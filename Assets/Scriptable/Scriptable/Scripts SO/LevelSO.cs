@@ -48,7 +48,7 @@ public class LevelSO : ScriptableObject
         int y= lines[0].ToCharArray().Length;
 
        
-        Debug.Log($" x Lenght: {x}, y lenth {y}");
+       // Debug.Log($" x Lenght: {x}, y lenth {y}");
 
         arrayList = new char[x, y];
 
@@ -56,10 +56,10 @@ public class LevelSO : ScriptableObject
         {
             
             char[] lineChars =  lines[row].ToCharArray();
-            Debug.Log($" Line: {row} : {lines[row]} Charline Length {lineChars.Length}");
+           // Debug.Log($" Line: {row} : {lines[row]} Charline Length {lineChars.Length}");
             for (int colum = 0; colum < lineChars.Length; colum++)
             {
-                Debug.Log(row + " " + colum);
+              //  Debug.Log(row + " " + colum);
                 arrayList[row, colum] = lineChars[colum];
             }
         }
@@ -67,7 +67,22 @@ public class LevelSO : ScriptableObject
         //will implement later
         return arrayList;
     }
+    public Vector3 GetPlatePositionByID(char ID) {
 
+
+        for (int row = 0; row < arrayList.GetLength(0); row++)
+        {
+
+            
+            for (int colum = 0; colum < arrayList.GetLength(1); colum++)
+            {
+                if (ID == arrayList[row, colum])
+                    return new Vector3(row, 0, colum);
+            }
+        }
+
+        return Vector3.zero;
+    }
 
    
 }

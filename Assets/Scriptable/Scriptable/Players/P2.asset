@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94103d083afcb4f4ea0da42000b6de88, type: 3}
+  m_Name: P2
+  m_EditorClassIdentifier: 
+  PlayerID: P1
+  PlayerName: Salva
+  modelPrefab: {fileID: 2674233186292783008, guid: f5146a04515034cea94eec1294e7b79c, type: 3}
+  UnitContainerPrefab: {fileID: 8617886081768338615, guid: 3b061e7c23edd4667b22cbd9e1d1dba2, type: 3}
