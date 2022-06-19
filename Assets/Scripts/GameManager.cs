@@ -5,12 +5,17 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     public ListOfObjects listOfObjects;
+    public Animator State;
     // Start is called before the first frame update
+
+    public static GameManager instance;
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         SetupGame();
-
-
     }
 
     // Update is called once per frame
@@ -19,6 +24,7 @@ public class GameManager : MonoBehaviour
 
         InitLevel(0); 
         InitTurnController(InitPlayers("P1"), InitPlayers("P2",true));
+
 
 
     }

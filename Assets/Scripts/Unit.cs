@@ -95,11 +95,16 @@ public class Unit : MonoBehaviour
 
         }
     }
+
     public Tween FallInSpace() {
+
         Sequence s = DOTween.Sequence();
         s.Append(this.transform.DOLocalMoveY(-10, .5f).SetEase(Ease.Linear));
-        s.OnComplete(() => SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)));
-
+        s.OnComplete(() =>
+        {
+        SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+            TurnController.instance.ChangeTurn();
+    });
         return s;
     }
 
@@ -108,23 +113,27 @@ public class Unit : MonoBehaviour
         s.Join(this.transform.DOLocalMoveY(1, 2).SetEase(Ease.InOutSine));
         s.Join(this.PlayerModel.DOShakePosition(2, 0.05f).SetEase(Ease.InOutSine));
         s.Append(this.transform.DOLocalMoveY(5, .5f).SetEase(Ease.OutBack));
-        s.OnComplete(() => SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)));
+        s.OnComplete(() => {
+            TurnController.instance.ChangeTurn();
+            SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+        } );
 
         return s;
     }
 
     public Tween Bounce()
     {
+
         Sequence s = DOTween.Sequence();
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => isActing = false);
 
         return s;
     }
-
-    
+   
     public Tween SpawnPlayer(Vector3 spawnPos)
     {
+
         Sequence s = DOTween.Sequence();
         s.Join(this.transform.DOLocalMove(spawnPos, 2).From(spawnPos + new Vector3(0, 10, 0)).SetEase(Ease.InExpo).SetDelay(Random.Range(0, 2)));
         s.Append(this.transform.DOPunchScale(new Vector3(0, -.8f, 0), 0.2f / 2, 1, .2f).SetEase(Ease.InFlash));
