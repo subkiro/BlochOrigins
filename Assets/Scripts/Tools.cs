@@ -20,7 +20,6 @@ public static class Tools
     {
 
 
-
          if( _Rotation > 0 && _Rotation < 90)
                 return new Vector3(1, 0, 0);
         if (_Rotation > 90 && _Rotation < 180)
@@ -31,6 +30,22 @@ public static class Tools
             return new Vector3(1, 0, 0);
         else return Vector3.zero;
        
+    }
+
+    public static Directions GetOpositeDirection(this Directions dir) {
+        switch (dir)
+        {
+            case Directions.FORWORD:
+                return Directions.BACK;
+            case Directions.BACK:
+                return Directions.FORWORD;
+            case Directions.LEFT:
+                return Directions.RIGHT;
+            case Directions.RIGHT:
+                return Directions.LEFT;
+            default:
+                return Directions.BACK;
+        }
     }
     #endregion
     #region CLASSES

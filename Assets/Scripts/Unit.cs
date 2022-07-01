@@ -23,7 +23,7 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public void Move(Tools.Directions direction)
+    public void Move2(Tools.Directions direction)
     {
         if (isActing) return;
        
@@ -69,7 +69,57 @@ public class Unit : MonoBehaviour
     }
 
 
+    public void Move(Tools.Directions direction)
+    {
+        if (isActing) {
 
+            DOTween.Kill(this, true);
+           // return;
+        }
+
+
+
+
+
+
+        Unit opponent = this.playerID == TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
+
+
+        Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
+                    direction == Tools.Directions.BACK ? Vector3.back :
+                    direction == Tools.Directions.LEFT ? Vector3.left :
+                    Vector3.right;
+
+
+        Vector3 rotationTarget = direction == Tools.Directions.FORWORD ? new Vector3(0, 0, 0) :
+                    direction == Tools.Directions.BACK ? new Vector3(0, 180, 0) :
+                    direction == Tools.Directions.LEFT ? new Vector3(0, -90, 0) :
+                    direction == Tools.Directions.RIGHT ? new Vector3(0, 90, 0) :
+                    new Vector3(0, 180, 0);
+
+
+        Vector3 finalPosition = this.transform.position + movePosTarget;
+
+
+
+
+        bool isOverlapingPlayers = (finalPosition == opponent.transform.localPosition);
+
+
+        Sequence s = DOTween.Sequence();
+        s.SetId(this);
+        s.OnStart(() => isActing = true);
+        s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
+        s.Join(this.transform.DOLocalRotate(rotationTarget, moveSpeed).SetEase(Ease.InFlash));
+        s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
+        s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
+        s.OnComplete(() => {
+
+            UnitPositionInGrid();
+        });
+
+
+    }
 
     public void UnitPositionInGrid() {
 
@@ -99,6 +149,7 @@ public class Unit : MonoBehaviour
     public Tween FallInSpace() {
 
         Sequence s = DOTween.Sequence();
+        s.SetId(this);
         s.Append(this.transform.DOLocalMoveY(-10, .5f).SetEase(Ease.Linear));
         s.OnComplete(() =>
         {
@@ -125,6 +176,7 @@ public class Unit : MonoBehaviour
     {
 
         Sequence s = DOTween.Sequence();
+        s.SetId(this);
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => isActing = false);
 
@@ -135,6 +187,7 @@ public class Unit : MonoBehaviour
     {
 
         Sequence s = DOTween.Sequence();
+        s.SetId(this);
         s.Join(this.transform.DOLocalMove(spawnPos, 2).From(spawnPos + new Vector3(0, 10, 0)).SetEase(Ease.InExpo).SetDelay(Random.Range(0, 2)));
         s.Append(this.transform.DOPunchScale(new Vector3(0, -.8f, 0), 0.2f / 2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => isActing = false);

@@ -10,6 +10,7 @@ public class TurnController : MonoBehaviour
 
     [SerializeField] public Unit PlayerUnit;
     [SerializeField] public Unit NpcUnit;
+    [SerializeField] private ActionRecorder _actionRecorder ;
 
     public static UnityAction<Unit> OnTurnChanged;
     private Unit m_currentTurnUnit;
@@ -17,6 +18,7 @@ public class TurnController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        _actionRecorder = new ActionRecorder();
     }
 
     public void SetTurn(Unit player) {
@@ -42,7 +44,15 @@ public class TurnController : MonoBehaviour
 
     public void OnMove(Tools.Directions direction)
     {
-        m_currentTurnUnit?.Move(direction);
+
+        var action = new MoveAction(m_currentTurnUnit,direction);
+        _actionRecorder.Record(action);
+       
+    }
+
+
+    public void Rewind() {
+        _actionRecorder.Rewind();
     }
 
     private void OnEnable()
