@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94103d083afcb4f4ea0da42000b6de88, type: 3}
   m_Name: P1
   m_EditorClassIdentifier: 
-  PlayerID: P1
-  PlayerName: Salva
+  PlayerID: P2
+  PlayerName: Alex
   modelPrefab: {fileID: 2674233186292783008, guid: f5146a04515034cea94eec1294e7b79c, type: 3}
   UnitContainerPrefab: {fileID: 8617886081768338615, guid: 3b061e7c23edd4667b22cbd9e1d1dba2, type: 3}
