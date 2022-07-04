@@ -16,6 +16,8 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
        
+        
+
 
         if (Input.GetKeyDown(KeyCode.W)) {
             OnMove?.Invoke(Tools.Directions.FORWORD);
@@ -34,7 +36,11 @@ public class InputManager : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButtonDown(0)) {
+
+
+
+
+        if (Input.GetMouseButtonDown(0) && StateManager.instance.CurrentState == StateManager.State.PlayerRound) {
             OnMove?.Invoke(ArrowIndicator.instance.LookDirection); 
         }
         if (Input.GetMouseButtonDown(1))

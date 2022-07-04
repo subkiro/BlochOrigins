@@ -22,26 +22,30 @@ public class TurnController : MonoBehaviour
     }
 
     public void SetTurn(Unit player) {
+
+      
         m_currentTurnUnit = player;
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         OnTurnChanged?.Invoke(m_currentTurnUnit);
+
     }
     public void ChangeTurn()
     {
-        m_currentTurnUnit = (m_currentTurnUnit.playerID==PlayerUnit.playerID)?NpcUnit:PlayerUnit;
+        m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit:PlayerUnit;
         SetTurn(m_currentTurnUnit);
 
        
     }
     public void Init(Unit _PlayerUnit, Unit _NpcUnit)
     {
+        
         PlayerUnit = _PlayerUnit;
         NpcUnit = _NpcUnit;
 
         SetTurn(PlayerUnit);
     }
 
-
+    
 
     public void OnMove(Tools.Directions direction)
     {

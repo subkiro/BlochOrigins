@@ -68,12 +68,16 @@ public class ArrowIndicator : MonoBehaviour
                 LookDirection = Tools.Directions.FORWORD;
             }
 
-
-
-
-
-
         }
 
+    }
+
+
+    private void OnEnable()
+    {
+        TurnController.OnTurnChanged += (x) =>
+        {
+            ArrowModel.gameObject.SetActive(StateManager.instance.CurrentState == StateManager.State.PlayerRound);
+        };
     }
 }

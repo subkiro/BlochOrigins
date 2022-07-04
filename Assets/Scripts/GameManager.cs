@@ -5,7 +5,7 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     public ListOfObjects listOfObjects;
-    public Animator State;
+   
     // Start is called before the first frame update
 
     public static GameManager instance;
