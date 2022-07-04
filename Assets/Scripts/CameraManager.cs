@@ -6,6 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     public static CameraManager instance;
     public CinemachineVirtualCamera TPS;
+    public CinemachineBrain Brain;
     public bool isFPS = true; 
 
     private void Awake()

@@ -32,6 +32,17 @@ public class InputManager : MonoBehaviour
         {
             OnMove?.Invoke(Tools.Directions.RIGHT);
         }
+
+
+        if (Input.GetMouseButtonDown(0)) {
+            OnMove?.Invoke(ArrowIndicator.instance.LookDirection); 
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            TurnController.instance.Rewind();
+        }
+
+
     }
 
 

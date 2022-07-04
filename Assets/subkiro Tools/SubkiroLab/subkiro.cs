@@ -49,9 +49,9 @@ public static class Subkiro
 
     public static Vector3 GetMouseWorldPosition() {
         Vector3 world_pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        world_pos.z = 0;
+        world_pos.y = 0;
         return world_pos;
     }
+   
 
-    
 }
