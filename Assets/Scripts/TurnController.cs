@@ -44,9 +44,11 @@ public class TurnController : MonoBehaviour
 
     public void OnMove(Tools.Directions direction)
     {
-
-        var action = new MoveAction(m_currentTurnUnit,direction);
-        _actionRecorder.Record(action);
+        if (m_currentTurnUnit.CanPlayerMove(direction)) {
+            var action = new MoveAction(m_currentTurnUnit, direction);
+            _actionRecorder.Record(action);
+        }
+       
        
     }
 

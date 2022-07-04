@@ -9,11 +9,12 @@ public class FloorPlateSO : ScriptableObject
     public GameObject model;
     public Tools.FloorType floorType;
 
+
     public Plate CreatePlate(GenericGrid<GridObject> grid,int x, int y) {
         GameObject tmp = Instantiate(model);
         
         Plate plate = tmp.AddComponent<Plate>();
-        
+
         tmp.transform.SetParent(LevelManager.instance.transform);
         tmp.transform.localPosition = new Vector3(x, 0, y);
         plate.Init(this, grid, x,y); 

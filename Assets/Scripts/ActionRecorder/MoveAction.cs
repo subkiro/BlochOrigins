@@ -9,14 +9,14 @@
     }
     public override void Execute()
     {
-        _unit.Move(_direction);
+        _unit.Move(_direction, isRewind:false);
     }
 
     
 
     public override void Undo()
     {
-        _unit.Move(_direction.GetOpositeDirection());
+        _unit.Move(_direction.GetOpositeDirection(),isRewind:true);
     }
 
     

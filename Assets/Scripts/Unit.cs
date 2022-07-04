@@ -23,13 +23,12 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public void Move2(Tools.Directions direction)
+    public void Move2(Tools.Directions direction, bool isRewind)
     {
         if (isActing) return;
-       
 
-      
-        
+
+
         Unit opponent = this.playerID==TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
 
 
@@ -61,29 +60,27 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers? new Vector3(0,opponent.PlayerModel.localScale.y,0): Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => {
-            
-            UnitPositionInGrid();
+
+            OnStepFinish(isRewind);
         });
 
 
     }
 
 
-    public void Move(Tools.Directions direction)
+
+
+
+    public void Move(Tools.Directions direction,bool isRewind)
     {
         if (isActing) {
-
-            DOTween.Kill(this, true);
-           // return;
+           DOTween.Kill(this, true);
+          
         }
 
-
-
-
-
-
-        Unit opponent = this.playerID == TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
-
+       
+       
+    
 
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
                     direction == Tools.Directions.BACK ? Vector3.back :
@@ -102,9 +99,15 @@ public class Unit : MonoBehaviour
 
 
 
+        
 
+        Unit opponent = this.playerID == TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
         bool isOverlapingPlayers = (finalPosition == opponent.transform.localPosition);
 
+
+
+
+        if (isRewind) OnStepFinish(isRewind);
 
         Sequence s = DOTween.Sequence();
         s.SetId(this);
@@ -114,20 +117,21 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => {
-
-            UnitPositionInGrid();
+            if(!isRewind) OnStepFinish(isRewind);
         });
-
+        
 
     }
 
-    public void UnitPositionInGrid() {
+
+
+    public void OnStepFinish(bool isRewind) {
 
         GridObject gridObject =   LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
         if (gridObject == null) { FallInSpace(); return; }
       
         Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
-
+        
 
 
         switch (gridObject.GetPlate().floorType)
@@ -139,12 +143,15 @@ public class Unit : MonoBehaviour
             case Tools.FloorType.EMPTY:
                 FallInSpace();
                 break;
-            default:
-                Bounce();
+            case Tools.FloorType.WALKABLE:
+                gridObject.GetPlate().ToggleColor(Color.red, isRewind);
                 break;
+           
 
         }
     }
+    
+
 
     public Tween FallInSpace() {
 
@@ -195,6 +202,52 @@ public class Unit : MonoBehaviour
         return s;
     }
 
+    public bool CanPlayerMove(Tools.Directions direction) {
 
+
+
+
+        Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
+                    direction == Tools.Directions.BACK ? Vector3.back :
+                    direction == Tools.Directions.LEFT ? Vector3.left :
+                    Vector3.right;
+
+
+       
+
+
+        Vector3 finalPosition = this.transform.position + movePosTarget;
+
+
+
+
+
+
+        GridObject gridObject = LevelManager.instance.grid.GetGridObject((int) finalPosition.x,(int) finalPosition.z);
+
+        if (gridObject == null) {  return false; }
+
+        Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
+
+
+
+        switch (gridObject.GetPlate().floorType)
+        {
+
+           
+            case Tools.FloorType.NONWOKABLE:
+                
+                return false;
+            case Tools.FloorType.WALKABLE:
+                if (gridObject.GetPlate().isActivePlate)
+                    return false;
+                else
+                    return true;
+            default:
+                return true;
+
+
+        }
+    }
 
 }
