@@ -11,6 +11,7 @@ public class ActionRecorder : MonoBehaviour
         action.Execute();
     }
     public void Rewind() {
+        if (_actions.Count == 0) return;
         var action = _actions.Pop();
         action.Undo();
     }
