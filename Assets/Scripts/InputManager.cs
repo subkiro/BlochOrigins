@@ -40,7 +40,7 @@ public class InputManager : MonoBehaviour
 
 
 
-        if (Input.GetMouseButtonDown(0) && StateManager.instance.CurrentState == StateManager.State.PlayerRound) {
+        if (Input.GetMouseButtonDown(0) && StateManager.instance.GetState() == StateManager.State.PlayerRound) {
             OnMove?.Invoke(ArrowIndicator.instance.LookDirection); 
         }
         if (Input.GetMouseButtonDown(1))

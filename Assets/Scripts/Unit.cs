@@ -155,14 +155,14 @@ public class Unit : MonoBehaviour
 
     public Tween FallInSpace() {
 
+        
+
         Sequence s = DOTween.Sequence();
         s.SetId(this);
         s.Append(this.transform.DOLocalMoveY(-10, .5f).SetEase(Ease.Linear));
-        s.OnComplete(() =>
-        {
-        SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
-            TurnController.instance.ChangeTurn();
-    });
+        s.OnComplete(() =>{SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)); });
+
+        TurnController.instance.ChangeTurn();
         return s;
     }
 

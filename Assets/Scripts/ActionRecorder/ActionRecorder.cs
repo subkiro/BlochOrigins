@@ -14,4 +14,9 @@ public class ActionRecorder : MonoBehaviour
         var action = _actions.Pop();
         action.Undo();
     }
+
+    public void Reset()
+    {
+        _actions.Clear();
+    }
 }

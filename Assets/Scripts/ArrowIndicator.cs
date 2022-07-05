@@ -73,11 +73,27 @@ public class ArrowIndicator : MonoBehaviour
     }
 
 
+    public void OnStateChange(StateManager.State state) {
+        switch (state)
+        {
+            case StateManager.State.PlayerRound:
+                ArrowModel.gameObject.SetActive(true); 
+                break;
+            case StateManager.State.NpcRound:
+                ArrowModel.gameObject.SetActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
     private void OnEnable()
     {
-        TurnController.OnTurnChanged += (x) =>
-        {
-            ArrowModel.gameObject.SetActive(StateManager.instance.CurrentState == StateManager.State.PlayerRound);
-        };
+        StateManager.OnStateChanged += OnStateChange;
+    }
+
+    private void OnDisable()
+    {
+        StateManager.OnStateChanged -= OnStateChange;
     }
 }

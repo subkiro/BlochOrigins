@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Plate : MonoBehaviour
 {
@@ -45,7 +46,11 @@ public class Plate : MonoBehaviour
 
     }
 
-
+    public void Reset()
+    {
+        SetPlateColor(OriginalColor);
+        isActivePlate = false;
+    }
 
     public Color GetPlateColor() {
 
@@ -62,20 +67,33 @@ public class Plate : MonoBehaviour
     }
 
 
-    public void SetPlateColor(Color color)
+    public void SetPlateColor(Color color,float speed = 1f)
     {
 
         if (TryGetComponent<MeshRenderer>(out MeshRenderer mesh))
         {
 
             if (mesh.materials.Length >= 2)
-               mesh.materials[1].color = color;
+              
+               mesh.materials[1].DOColor(color,speed);
             else
-               mesh.material.color=color;
+               mesh.material.DOColor(color, speed);
         }
 
         
     }
 
-   
+
+    public void OnStateChanged(StateManager.State state) {
+        Reset();
+    }
+
+    private void OnEnable()
+    {
+        StateManager.OnStateChanged += OnStateChanged;
+    }
+    private void OnDisable()
+    {
+        StateManager.OnStateChanged -= OnStateChanged;
+    }
 }

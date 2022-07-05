@@ -16,24 +16,36 @@ public class CameraManager : MonoBehaviour
 
 
 
-    public void SetCamraOnTurnChange(Unit player) {
-    
-            TPS.LookAt = player.transform;
-            TPS.Follow = player.transform;    
+    public void SetCamraOnStateChanged(StateManager.State state) {
+
+        switch (state)
+        {
+ 
+            case StateManager.State.PlayerRound:
+                TPS.LookAt = TurnController.instance.PlayerUnit.transform;
+                break;
+            case StateManager.State.NpcRound:
+                TPS.LookAt = TurnController.instance.NpcUnit.transform;
+                break;
+           
+        
+        }
+        
+         
     }
 
-    
+
 
 
     private void OnEnable()
     {
-        TurnController.OnTurnChanged += SetCamraOnTurnChange;
+        StateManager.OnStateChanged += SetCamraOnStateChanged;
     }
 
     private void OnDisable()
     {
-        TurnController.OnTurnChanged -= SetCamraOnTurnChange;
+        StateManager.OnStateChanged -= SetCamraOnStateChanged;
     }
 
-    
+
 }
