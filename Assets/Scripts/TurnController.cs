@@ -12,6 +12,7 @@ public class TurnController : MonoBehaviour
     [SerializeField] public Unit NpcUnit;
     [SerializeField] GameObject ArrowControler;
      private ActionRecorder _actionRecorder ;
+    public static UnityAction<Unit> OnTurnChanged;
 
 
     private Unit m_currentTurnUnit;
@@ -28,6 +29,8 @@ public class TurnController : MonoBehaviour
       
         m_currentTurnUnit = player;
         StateManager.instance.SetState((m_currentTurnUnit.playerID == PlayerUnit.playerID) ? StateManager.State.PlayerRound : StateManager.State.NpcRound);
+        OnTurnChanged?.Invoke(m_currentTurnUnit);
+
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         _actionRecorder.Reset();
 

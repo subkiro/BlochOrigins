@@ -23,54 +23,6 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public void Move2(Tools.Directions direction, bool isRewind)
-    {
-        if (isActing) return;
-
-
-
-        Unit opponent = this.playerID==TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
-
-
-        Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? PlayerModel.rotation * Vector3.forward :
-                    direction == Tools.Directions.BACK ? PlayerModel.rotation * Vector3.back :
-                    direction == Tools.Directions.LEFT ? PlayerModel.rotation * Vector3.left :
-                    PlayerModel.rotation * Vector3.right;
-
-
-        Vector3 rotationTarget = direction == Tools.Directions.FORWORD ? transform.eulerAngles :
-                    direction == Tools.Directions.BACK ? transform.eulerAngles + new Vector3(0, 180, 0) :
-                    direction == Tools.Directions.LEFT ? transform.eulerAngles + new Vector3(0, -90, 0) :
-                    direction == Tools.Directions.RIGHT ? transform.eulerAngles + new Vector3(0, 90, 0) :
-                    transform.eulerAngles;
-
-
-        Vector3 finalPosition = this.transform.position + movePosTarget;
-
-
-
-
-        bool isOverlapingPlayers = (finalPosition == opponent.transform.localPosition);
-     
-
-        Sequence s = DOTween.Sequence();
-        s.OnStart(() => isActing = true);
-        s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
-        s.Join(this.transform.DOLocalRotate(rotationTarget, moveSpeed).SetEase(Ease.InFlash));
-        s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers? new Vector3(0,opponent.PlayerModel.localScale.y,0): Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
-        s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
-        s.OnComplete(() => {
-
-            OnStepFinish(isRewind);
-        });
-
-
-    }
-
-
-
-
-
     public void Move(Tools.Directions direction,bool isRewind)
     {
         if (isActing) {
@@ -123,8 +75,6 @@ public class Unit : MonoBehaviour
 
     }
 
-
-
     public void OnStepFinish(bool isRewind) {
 
         GridObject gridObject =   LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
@@ -149,9 +99,7 @@ public class Unit : MonoBehaviour
            
 
         }
-    }
-    
-
+    }  
 
     public Tween FallInSpace() {
 
@@ -167,14 +115,19 @@ public class Unit : MonoBehaviour
     }
 
     public Tween Finish() {
+
+        CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Zoom, this.transform);
+
         Sequence s = DOTween.Sequence();
         s.Join(this.transform.DOLocalMoveY(1, 2).SetEase(Ease.InOutSine));
         s.Join(this.PlayerModel.DOShakePosition(2, 0.05f).SetEase(Ease.InOutSine));
         s.Append(this.transform.DOLocalMoveY(5, .5f).SetEase(Ease.OutBack));
+        s.Append(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutFlash));
         s.OnComplete(() => {
             TurnController.instance.ChangeTurn();
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
-        } );
+
+        });
 
         return s;
     }
@@ -195,8 +148,8 @@ public class Unit : MonoBehaviour
 
         Sequence s = DOTween.Sequence();
         s.SetId(this);
-        s.Join(this.transform.DOLocalMove(spawnPos, 2).From(spawnPos + new Vector3(0, 10, 0)).SetEase(Ease.InExpo).SetDelay(Random.Range(0, 2)));
-        s.Append(this.transform.DOPunchScale(new Vector3(0, -.8f, 0), 0.2f / 2, 1, .2f).SetEase(Ease.InFlash));
+        s.Join(this.transform.DOLocalMove(spawnPos, 0).SetEase(Ease.InExpo).SetDelay(Random.Range(0, 2)));
+        s.Join(this.transform.DOScale(1, .3f).From(0).SetEase(Ease.OutBounce));
         s.OnComplete(() => isActing = false);
 
         return s;
@@ -250,4 +203,24 @@ public class Unit : MonoBehaviour
         }
     }
 
+
+
+
+
+    public void OnTurnChanged(Unit player) {
+        if (isActing) return;
+        if (this == player) {
+            Bounce();
+        }
+        
+    }
+    private void OnEnable()
+    {
+        TurnController.OnTurnChanged += OnTurnChanged;
+    }
+    private void OnDisable()
+    {
+        TurnController.OnTurnChanged -= OnTurnChanged;
+
+    }
 }
