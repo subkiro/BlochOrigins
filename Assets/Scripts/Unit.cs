@@ -108,6 +108,7 @@ public class Unit : MonoBehaviour
         Sequence s = DOTween.Sequence();
         s.SetId(this);
         s.Append(this.transform.DOLocalMoveY(-10, .5f).SetEase(Ease.Linear));
+        s.Join(this.transform.DOScale(0, 0.5f).SetEase(Ease.OutSine));
         s.OnComplete(() =>{SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)); });
 
         TurnController.instance.ChangeTurn();
