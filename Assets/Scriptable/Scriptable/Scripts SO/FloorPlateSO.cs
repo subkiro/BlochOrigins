@@ -15,7 +15,7 @@ public class FloorPlateSO : ScriptableObject
         
         Plate plate = tmp.AddComponent<Plate>();
 
-        tmp.transform.SetParent(LevelManager.instance.transform);
+        tmp.transform.SetParent(LevelManager.instance.FloorContainer);
         tmp.transform.localPosition = new Vector3(x, 0, y);
         plate.Init(this, grid, x,y); 
 

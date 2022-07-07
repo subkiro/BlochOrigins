@@ -8,7 +8,7 @@ public  class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
     public GenericGrid<GridObject> grid;
-
+    public Transform FloorContainer;
     private LevelSO m_CurrentLevel;
     private List<FloorPlateSO> m_AllPlates;
     private void Awake()
