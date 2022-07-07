@@ -1393,11 +1393,11 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 15.88
-    OrthographicSize: 7.6
+    OrthographicSize: 9.2
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
-    ModeOverride: 1
+    ModeOverride: 2
     LensShift: {x: 0, y: 0}
     GateFit: 2
     m_SensorSize: {x: 1.7777778, y: 1}
@@ -1417,7 +1417,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 734613009}
   m_LocalRotation: {x: 0.7045212, y: -0, z: -0, w: 0.70968294}
-  m_LocalPosition: {x: 5.8, y: 100, z: 3.66}
+  m_LocalPosition: {x: 5.8, y: 50, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1442,7 +1442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1454,19 +1454,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4769997782291911693, guid: b34122ec70a594f6fbfd79228db77c85, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1824,7 +1824,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 56
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
