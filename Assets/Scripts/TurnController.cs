@@ -38,10 +38,8 @@ public class TurnController : MonoBehaviour
     public void ChangeTurn()
     {
         m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit:PlayerUnit;
-
         SetTurn(m_currentTurnUnit);
 
-       
     }
     public void Init(Unit _PlayerUnit, Unit _NpcUnit)
     {

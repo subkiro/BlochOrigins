@@ -29,7 +29,8 @@ public class StateManager : MonoBehaviour
         PlayerRound,
         NpcRound,
         GameStarted,
-        GameEnded
+        GameEnded,
+        Dice
     }
 
 }

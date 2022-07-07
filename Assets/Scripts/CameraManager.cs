@@ -28,14 +28,17 @@ public class CameraManager : MonoBehaviour
                 break;
             case StateManager.State.NpcRound:
                 CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Normal.ToString());
-                Brain.ActiveVirtualCamera.LookAt = TurnController.instance.NpcUnit.transform;
-                
+                Brain.ActiveVirtualCamera.LookAt = TurnController.instance.NpcUnit.transform;                
                 break;           
             case StateManager.State.Menu:
+                CameraStateAnimator.SetTrigger(CameraStates.Menu.ToString());
                 break;
             case StateManager.State.GameStarted:
+                CameraStateAnimator.SetTrigger(CameraStates.TopDown.ToString());
                 break;
             case StateManager.State.GameEnded:
+                break;
+            case StateManager.State.Dice:
                 break;
         }
 
