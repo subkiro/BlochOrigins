@@ -37,8 +37,15 @@ public class InputManager : MonoBehaviour
 
 
 
+        if (Input.GetKeyDown(KeyCode.Space) )
+        {
+            CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
+        }
 
-
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Normal);
+        }
 
         if (Input.GetMouseButtonDown(0) && StateManager.instance.GetState() == StateManager.State.PlayerRound) {
             OnMove?.Invoke(ArrowIndicator.instance.LookDirection); 

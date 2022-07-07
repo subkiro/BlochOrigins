@@ -112,6 +112,7 @@ public class Unit : MonoBehaviour
         s.OnComplete(() =>{SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)); });
 
         TurnController.instance.ChangeTurn();
+
         return s;
     }
 

@@ -29,8 +29,8 @@ public class TurnController : MonoBehaviour
       
         m_currentTurnUnit = player;
         StateManager.instance.SetState((m_currentTurnUnit.playerID == PlayerUnit.playerID) ? StateManager.State.PlayerRound : StateManager.State.NpcRound);
+        DiceController.instance.SpawnCristal(player);
         OnTurnChanged?.Invoke(m_currentTurnUnit);
-
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         _actionRecorder.Reset();
 
@@ -38,6 +38,7 @@ public class TurnController : MonoBehaviour
     public void ChangeTurn()
     {
         m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit:PlayerUnit;
+
         SetTurn(m_currentTurnUnit);
 
     }
