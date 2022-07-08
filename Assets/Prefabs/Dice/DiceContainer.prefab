@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NormalDice: {fileID: 4714012169004804070, guid: 0a09d7dac4e094b428adb05461a1f576, type: 3}
-  SpecialDice: {fileID: 4714012169004804070, guid: 0a09d7dac4e094b428adb05461a1f576, type: 3}
-  CristalEffect: {fileID: 5757398431863123765, guid: c6dd5daa5aa574634883bf26b64824d6, type: 3}
+  SpecialDice: {fileID: 4714012169004804070, guid: 8f7f837cf059e0a46ab934658eb38d88, type: 3}
   UICamera: {fileID: 0}
+  DiceNumber: {fileID: 0}
 --- !u!1 &7492842377904403579
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +91,7 @@ Camera:
   m_GameObject: {fileID: 7492842377904403579}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -115,7 +115,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 512
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8600000, guid: cf0a27db37a53a241bba3878e3fdade1, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1

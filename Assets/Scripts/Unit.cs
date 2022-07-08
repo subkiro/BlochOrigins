@@ -107,23 +107,27 @@ public class Unit : MonoBehaviour
 
         Sequence s = DOTween.Sequence();
         s.SetId(this);
-        s.Append(this.transform.DOLocalMoveY(-10, .5f).SetEase(Ease.Linear));
-        s.Join(this.transform.DOScale(0, 0.5f).SetEase(Ease.OutSine));
-        s.OnComplete(() =>{SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this)); });
+        s.Append(this.transform.DOLocalMoveY(-3, .3f).SetEase(Ease.Linear));
+        s.Join(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine));
+        s.OnComplete(() =>{
+            TurnController.instance.ChangeTurn();
+            SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+           
+        });
 
-        TurnController.instance.ChangeTurn();
+        
 
         return s;
     }
 
     public Tween Finish() {
 
-        CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Zoom, this.transform);
+        StateManager.instance.SetState(StateManager.State.GameEnded);
 
         Sequence s = DOTween.Sequence();
-        s.Join(this.transform.DOLocalMoveY(1, 2).SetEase(Ease.InOutSine));
+        s.Join(this.transform.DOLocalMoveY(.5f, 2).SetEase(Ease.InOutSine));
         s.Join(this.PlayerModel.DOShakePosition(2, 0.05f).SetEase(Ease.InOutSine));
-        s.Append(this.transform.DOLocalMoveY(5, .5f).SetEase(Ease.OutBack));
+        s.Append(this.transform.DOLocalMoveY(2, .5f).SetEase(Ease.OutBack));
         s.Append(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutFlash));
         s.OnComplete(() => {
             TurnController.instance.ChangeTurn();
@@ -158,32 +162,19 @@ public class Unit : MonoBehaviour
     }
 
     public bool CanPlayerMove(Tools.Directions direction) {
-
-
-
-
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
                     direction == Tools.Directions.BACK ? Vector3.back :
                     direction == Tools.Directions.LEFT ? Vector3.left :
                     Vector3.right;
 
 
-       
-
 
         Vector3 finalPosition = this.transform.position + movePosTarget;
-
-
-
-
-
-
         GridObject gridObject = LevelManager.instance.grid.GetGridObject((int) finalPosition.x,(int) finalPosition.z);
 
         if (gridObject == null) {  return false; }
 
         Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
-
 
 
         switch (gridObject.GetPlate().floorType)
@@ -204,11 +195,6 @@ public class Unit : MonoBehaviour
 
         }
     }
-
-
-
-
-
     public void OnTurnChanged(Unit player) {
         if (isActing) return;
         if (this == player) {

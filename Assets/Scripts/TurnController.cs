@@ -28,8 +28,8 @@ public class TurnController : MonoBehaviour
 
       
         m_currentTurnUnit = player;
-        StateManager.instance.SetState((m_currentTurnUnit.playerID == PlayerUnit.playerID) ? StateManager.State.PlayerRound : StateManager.State.NpcRound);
-        DiceController.instance.SpawnCristal(player);
+        DiceController.instance.ThrowDice(player);
+
         OnTurnChanged?.Invoke(m_currentTurnUnit);
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         _actionRecorder.Reset();
@@ -48,11 +48,13 @@ public class TurnController : MonoBehaviour
         PlayerUnit = _PlayerUnit;
         NpcUnit = _NpcUnit;
 
-        SetTurn(PlayerUnit);
     }
 
-    
 
+    public Unit GetCurrentUnit() => m_currentTurnUnit;
+    public bool IsNpc(Unit player) {
+        return (player.playerID != PlayerUnit.playerID);
+    }
     public void OnMove(Tools.Directions direction)
     {
         if (m_currentTurnUnit.CanPlayerMove(direction)) {
@@ -62,8 +64,6 @@ public class TurnController : MonoBehaviour
        
        
     }
-
-
     public void Rewind() {
         _actionRecorder.Rewind();
     }

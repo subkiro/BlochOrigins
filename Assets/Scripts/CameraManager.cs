@@ -8,14 +8,17 @@ public class CameraManager : MonoBehaviour
     public CinemachineBrain Brain;
     public Animator CameraStateAnimator;
 
+    public CinemachineVirtualCamera GamePlay_Normal, GamePlay_Npc,TopDown;
+
     private void Awake()
     {
         instance = this;
         CameraStateAnimator = GetComponent<Animator>();
+        
     }
 
 
-    public enum CameraStates { GamePlay_Normal, GamePlay_Zoom, TopDown,Menu }
+    public enum CameraStates { GamePlay_Normal, GamePlay_Npc,TopDown }
 
     public void SetCamraOnStateChanged(StateManager.State state) {
 
@@ -23,23 +26,25 @@ public class CameraManager : MonoBehaviour
         {
 
             case StateManager.State.PlayerRound:
+                GamePlay_Normal.Follow = TurnController.instance.PlayerUnit.transform;
+                GamePlay_Normal.LookAt = TurnController.instance.PlayerUnit.transform;
                 CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Normal.ToString());
-                Brain.ActiveVirtualCamera.LookAt=TurnController.instance.PlayerUnit.transform;
                 break;
             case StateManager.State.NpcRound:
-                CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Normal.ToString());
-                Brain.ActiveVirtualCamera.LookAt = TurnController.instance.NpcUnit.transform;                
-                break;           
-            case StateManager.State.Menu:
-                CameraStateAnimator.SetTrigger(CameraStates.Menu.ToString());
-                break;
-            case StateManager.State.GameStarted:
-                CameraStateAnimator.SetTrigger(CameraStates.TopDown.ToString());
-                break;
-            case StateManager.State.GameEnded:
-                break;
+                GamePlay_Npc.Follow = TurnController.instance.NpcUnit.transform;
+                GamePlay_Npc.LookAt = TurnController.instance.NpcUnit.transform;
+                CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Npc.ToString());       
+            break;           
+                 case StateManager.State.GameStarted:
+                 CameraStateAnimator.SetTrigger(CameraStates.TopDown.ToString());
+            break;
             case StateManager.State.Dice:
+                GamePlay_Normal.Follow = default;
+                GamePlay_Normal.LookAt = default;
+                GamePlay_Npc.Follow = default;
+                GamePlay_Npc.LookAt = default;
                 break;
+
         }
 
 
@@ -49,10 +54,11 @@ public class CameraManager : MonoBehaviour
     public void SetCameraState(CameraStates state, Transform lootAt = null) {
        
         CameraStateAnimator.SetTrigger(state.ToString());
-        if (lootAt != null)
-            Brain.ActiveVirtualCamera.LookAt = lootAt;
+       
 
     }
+
+
 
     private void OnEnable()
     {

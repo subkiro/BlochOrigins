@@ -15,12 +15,56 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        if (StateManager.instance.GetState() == StateManager.State.PlayerRound || StateManager.instance.GetState() == StateManager.State.NpcRound)
+
+
+            switch (StateManager.instance.GetState())
+            {
+                case StateManager.State.Menu:
+                    break;
+                case StateManager.State.PlayerRound:
+                case StateManager.State.NpcRound:
+                    GameControlMovements();
+                    break;
+                case StateManager.State.GameStarted:
+                    break;
+                case StateManager.State.GameEnded:
+                    break;
+                case StateManager.State.Dice:
+                    break;          
+            }
+
+
+
+
+
+
+
+
+
+        //Test
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Normal);
+        }
+
        
-        
 
+    }
 
-        if (Input.GetKeyDown(KeyCode.W)) {
-            OnMove?.Invoke(Tools.Directions.FORWORD);
+    private static void GameControlMovements()
+    {
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+                OnMove?.Invoke(Tools.Directions.FORWORD);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -35,39 +79,16 @@ public class InputManager : MonoBehaviour
             OnMove?.Invoke(Tools.Directions.RIGHT);
         }
 
-
-
-        if (Input.GetKeyDown(KeyCode.Space) )
+        //Mouse Controll
+        if (Input.GetMouseButtonDown(0) && StateManager.instance.GetState() == StateManager.State.PlayerRound)
         {
-            CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Normal);
-        }
-
-        if (Input.GetMouseButtonDown(0) && StateManager.instance.GetState() == StateManager.State.PlayerRound) {
-            OnMove?.Invoke(ArrowIndicator.instance.LookDirection); 
+            OnMove?.Invoke(ArrowIndicator.instance.LookDirection);
         }
         if (Input.GetMouseButtonDown(1))
         {
             TurnController.instance.Rewind();
         }
-
-
-
-
-        //Test
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo);
-            message.SetData("Title", "Welcome to our new message", () => Debug.Log("OnYes"), () => Debug.Log("OnNo")); CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
-        }
-
     }
-
 
 
 

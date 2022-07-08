@@ -34,7 +34,6 @@ public class PopUpManager : MonoBehaviour
     }
     public T Show<T>(GameObject prefab, Transform parent = null, bool withBlur = true, float FadeMoveYPos = 50,  float FadeSpeed = 0.2f,  params GameObject[] skipBlureList)
     {
-        Time.timeScale = 0;
         Transform parentObject;
         if (parent == null) parentObject = this.transform;
         else { parentObject = parent; }
@@ -162,7 +161,8 @@ public class PopUpManager : MonoBehaviour
         s.SetId(view).SetUpdate(true);
         s.Join( MainInfoGroup?.DOFade(0, FadeSpeed));
         s.Join( viewRect?.DOAnchorPosY(-FadeMoveYPos, FadeSpeed).SetEase(Ease.InFlash));
-        s.OnComplete(() => { DestroyOnComplete(view); Time.timeScale = 1; });
+        s.OnComplete(() => { DestroyOnComplete(view); 
+        });
     }
     public void FastHide(PopUp view,float fadeOutSpeed = 0)
     {

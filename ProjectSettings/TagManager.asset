@@ -11,10 +11,10 @@ TagManager:
   - 
   - Water
   - UI
-  - FrontUI
-  - BackUI
-  - Middle
-  - 
+  - Level
+  - Player
+  - LevelAssets
+  - Dice
   - 
   - 
   - 
@@ -40,4 +40,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Back
+    uniqueID: 2051525469
+    locked: 0
+  - name: Middle
+    uniqueID: 1280084269
+    locked: 0
+  - name: Front
+    uniqueID: 2106176341
+    locked: 0
+  - name: FronUI
+    uniqueID: 2362448089
     locked: 0

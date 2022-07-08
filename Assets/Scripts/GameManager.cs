@@ -17,8 +17,7 @@ public class GameManager : MonoBehaviour
     {
         SetupGame();
 
-        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo);
-        message.SetData("Title", "Welcome to our new message", () => Debug.Log("OnYes"), () => Debug.Log("OnNo"));
+       
     }
 
     // Update is called once per frame
@@ -29,6 +28,9 @@ public class GameManager : MonoBehaviour
         InitTurnController(InitPlayers("P1"), InitPlayers("P2",true));
 
 
+
+
+        DG.Tweening.DOVirtual.DelayedCall(2, () => TurnController.instance.SetTurn(TurnController.instance.PlayerUnit));
 
     }
 

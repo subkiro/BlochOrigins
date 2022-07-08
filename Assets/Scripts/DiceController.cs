@@ -7,42 +7,71 @@ public class DiceController : MonoBehaviour
 {
     public GameObject NormalDice;
     public GameObject SpecialDice;
-    public GameObject CristalEffect;
     public Camera UICamera;
     public TMP_Text DiceNumber;
     public static DiceController instance;
+    private GameObject diceNormal,diceSpecial;
     private void Awake()
     {
         instance = this;
+        diceNormal = Instantiate(NormalDice, this.transform);
+        diceNormal.transform.localScale = Vector3.zero;
+        diceSpecial = Instantiate(SpecialDice, this.transform);
+        diceSpecial.transform.localScale = Vector3.zero;
     }
 
-    public void SpawnCristal(Unit player) {
-        StateManager.instance.SetState(StateManager.State.Dice);
+    public void TestThrowDice() {
+        ThrowDice(TurnController.instance.GetCurrentUnit());
+        
+    }
 
-        this.transform.DOMove(player.transform.position+new Vector3(0,3,0), 0);
-        GameObject temp = Instantiate(CristalEffect, this.transform);
-        GameObject dice = Instantiate(NormalDice, this.transform);
-        dice.transform.localScale = Vector3.zero;
-        DiceNumber.DOScale(0, 0); ;
+    public void ThrowDice(Unit player) {
+        StateManager.instance.SetState(StateManager.State.Dice);
+        if (TurnController.instance.IsNpc(player))
+        {
+            ThrowDiceNpc(player);
+        }
+        else {
+            ThrowDicePlayer(player);
+           }
+      
+    }
+
+
+    public void ThrowDiceNpc(Unit player) {
+        AnimateDice(player);
+    }
+    public void ThrowDicePlayer(Unit player)
+    {
+        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo, withBlur: false);
+        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player), () => AnimateDice(player, true), NoButtonText: "Normal",YesButtonText: "Special");
+
+
+    }
+    public void AnimateDice(Unit player,bool isDiceSpecial = false) {
+        
+        StateManager.instance.SetState(StateManager.State.Dice);
+        Transform dice = (isDiceSpecial) ? diceSpecial.transform : diceNormal.transform;
+
+       
+
         Sequence s = DOTween.Sequence();
 
-        Vector3 position = UICamera.ScreenToWorldPoint(new Vector3(Screen.width/2,Screen.height/2,10));
-        s.Append(DiceNumber.DOScale(0,0.5f));
-        s.Append(temp.transform.DOScale(0, 0.3f).SetEase(Ease.OutBack).SetDelay(3));
-        s.AppendCallback(() => Destroy(temp));
-        s.Append(dice.transform.DOScale(Vector3.one, .3f));
-        s.Append(dice.transform.DOShakeRotation(3, 90, 10, 90,false));
-        s.Append(dice.transform.DORotate(OpenDice(), 1).SetEase(Ease.OutBack));    
+        s.Join(DiceNumber.DOScale(0, 0));
+        s.Join(dice.transform.DOScale(Vector3.one, .3f));
+        s.Join(dice.transform.DOShakeRotation(3, 90, 10, 90,false));
+        s.Append(dice.transform.DORotate(OpenDice(isDiceSpecial), 1).SetEase(Ease.OutBack));
+        s.AppendInterval(.5f);
         s.Append(dice.transform.DOScale(Vector3.zero, 0.3f));
-        s.Append(DiceNumber.DOScale(1, 0.5f));
-        s.AppendCallback(()=>Destroy(dice));
-        s.AppendCallback(() => StateManager.instance.SetState((player.playerID == TurnController.instance.PlayerUnit.playerID) ? StateManager.State.PlayerRound : StateManager.State.NpcRound));
+        s.Append(DiceNumber.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack));
+        s.AppendCallback(() => StateManager.instance.SetState((TurnController.instance.IsNpc(player)) ? StateManager.State.NpcRound : StateManager.State.PlayerRound));
 
     }
 
-    public Vector3 OpenDice() {
+    public Vector3 OpenDice(bool isDiceSpecial) {
 
-        int random = Random.Range(1, 6);
+        int random = Random.Range(1, (isDiceSpecial)?10:6);
+       
         DiceNumber.text = random.ToString();
         switch (random)
         {
@@ -59,7 +88,15 @@ public class DiceController : MonoBehaviour
                 return new Vector3(-90, 0, 0);
             case 6:
                 return new Vector3(0, 90, 0);
-                default: return new Vector3(0, 0, 0);
+            case 7:
+                return new Vector3(0, 360, 0);
+            case 8:
+                return new Vector3(0, 90, 90);
+            case 9:
+                return new Vector3(0, 180, 180);
+            case 10:
+                return new Vector3(0, 90, 180);
+            default: return new Vector3(0, 0, 0);
         }
     }
 }
