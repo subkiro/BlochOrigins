@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SetupGame();
+
+        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo);
+        message.SetData("Title", "Welcome to our new message", () => Debug.Log("OnYes"), () => Debug.Log("OnNo"));
     }
 
     // Update is called once per frame

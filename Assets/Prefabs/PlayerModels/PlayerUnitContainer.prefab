@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8617886081768338609}
   - component: {fileID: 8617886081768338610}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerUnitContainer
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -44,3 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dcf393156d3140d2928b888a9763262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 
+  playerName: 
+  isNpc: 0

@@ -77,8 +77,8 @@ public  class LevelManager : MonoBehaviour
 
                 Color brown = floorPlate.GetComponent<MeshRenderer>().materials[0].color;
                 Color green = floorPlate.GetComponent<MeshRenderer>().materials[1].color;
-                floorPlate.GetComponent<MeshRenderer>().materials[0].DOColor(brown, Random.Range(.5f, 1f)).From(Color.white);
-                floorPlate.GetComponent<MeshRenderer>().materials[1].DOColor(green, Random.Range(.2f, 1f)).From(Color.white).SetDelay(1);
+               // floorPlate.GetComponent<MeshRenderer>().materials[0].DOColor(brown, Random.Range(.5f, 1f)).From(Color.white);
+              //  floorPlate.GetComponent<MeshRenderer>().materials[1].DOColor(green, Random.Range(.2f, 1f)).From(Color.white).SetDelay(1);
                // floorPlate.transform.DOMoveY(0, Random.Range(1, 2)).From(10).SetEase(Ease.OutBounce).SetDelay(delayValue);
 
             }

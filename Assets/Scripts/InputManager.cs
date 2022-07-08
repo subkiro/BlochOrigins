@@ -56,6 +56,16 @@ public class InputManager : MonoBehaviour
         }
 
 
+
+
+        //Test
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo);
+            message.SetData("Title", "Welcome to our new message", () => Debug.Log("OnYes"), () => Debug.Log("OnNo")); CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
+        }
+
     }
 
 
