@@ -38,6 +38,7 @@ public class Plate : MonoBehaviour
         else {
             SetPlateColor(color);
             isActivePlate = true;
+            
 
         }
             

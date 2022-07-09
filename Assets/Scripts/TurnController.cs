@@ -13,10 +13,10 @@ public class TurnController : MonoBehaviour
     [SerializeField] GameObject ArrowControler;
      private ActionRecorder _actionRecorder ;
     public static UnityAction<Unit> OnTurnChanged;
-
+    public static UnityAction<int> OnStepExecuted;
 
     private Unit m_currentTurnUnit;
-
+    public int DiceResult;
     private void Awake()
     {
         instance = this;
@@ -29,7 +29,6 @@ public class TurnController : MonoBehaviour
       
         m_currentTurnUnit = player;
         DiceController.instance.ThrowDice(player);
-
         OnTurnChanged?.Invoke(m_currentTurnUnit);
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         _actionRecorder.Reset();
@@ -57,15 +56,24 @@ public class TurnController : MonoBehaviour
     }
     public void OnMove(Tools.Directions direction)
     {
-        if (m_currentTurnUnit.CanPlayerMove(direction)) {
+        if (m_currentTurnUnit.CanPlayerMove(direction) && DiceResult-GetActionCounterResults()>0) {
+           
             var action = new MoveAction(m_currentTurnUnit, direction);
             _actionRecorder.Record(action);
+            OnStepExecuted?.Invoke(GetActionCounterResults());
         }
        
        
     }
     public void Rewind() {
         _actionRecorder.Rewind();
+        OnStepExecuted?.Invoke(GetActionCounterResults());
+
+    }
+
+    public int GetActionCounterResults() {
+
+       return (_actionRecorder.GetCount());
     }
 
     private void OnEnable()

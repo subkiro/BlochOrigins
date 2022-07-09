@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ArrowIndicator : MonoBehaviour
 {
@@ -77,10 +78,12 @@ public class ArrowIndicator : MonoBehaviour
         switch (state)
         {
             case StateManager.State.PlayerRound:
-                ArrowModel.gameObject.SetActive(true); 
+                this.transform.localPosition = Vector3.zero;
+                this.transform.DOScale(1, 0.5f).SetEase(Ease.OutBack).OnStart(() => { ArrowModel.gameObject.SetActive(true); });
                 break;
             case StateManager.State.NpcRound:
-                ArrowModel.gameObject.SetActive(false);
+                this.transform.DOScale(0, 0).OnComplete(() => { ArrowModel.gameObject.SetActive(false); });
+                
                 break;
             default:
                 break;

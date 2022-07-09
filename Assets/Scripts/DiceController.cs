@@ -11,6 +11,8 @@ public class DiceController : MonoBehaviour
     public TMP_Text DiceNumber;
     public static DiceController instance;
     private GameObject diceNormal,diceSpecial;
+    public int DiceResult;
+    public int AvaliableMovements;
     private void Awake()
     {
         instance = this;
@@ -44,7 +46,7 @@ public class DiceController : MonoBehaviour
     public void ThrowDicePlayer(Unit player)
     {
         MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo, withBlur: false);
-        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player), () => AnimateDice(player, true), NoButtonText: "Normal",YesButtonText: "Special");
+        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player,true), () => AnimateDice(player), NoButtonText: "Normal",YesButtonText: "Special");
 
 
     }
@@ -70,10 +72,10 @@ public class DiceController : MonoBehaviour
 
     public Vector3 OpenDice(bool isDiceSpecial) {
 
-        int random = Random.Range(1, (isDiceSpecial)?10:6);
-       
-        DiceNumber.text = random.ToString();
-        switch (random)
+        DiceResult = Random.Range((isDiceSpecial) ? 5 : 1, (isDiceSpecial)?10:6);
+        TurnController.instance.DiceResult = DiceResult;
+        DiceNumber.text = DiceResult.ToString();
+        switch (DiceResult)
         {
            
             case 1:
@@ -98,5 +100,20 @@ public class DiceController : MonoBehaviour
                 return new Vector3(0, 90, 180);
             default: return new Vector3(0, 0, 0);
         }
+    }
+
+    public void UpdateDiceText(int value) {
+        DiceNumber.text = $"{value}/{DiceResult}";
+    }
+   
+
+    private void OnEnable()
+    {
+        TurnController.OnStepExecuted += UpdateDiceText;
+    }
+
+    private void OnDisable()
+    {
+        TurnController.OnStepExecuted -= UpdateDiceText;
     }
 }

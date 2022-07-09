@@ -13,7 +13,9 @@ public class Unit : MonoBehaviour
     public bool isNpc;
     private float moveSpeed = 0.3f;
     private bool isActing;
+    public int movementCounter = 0;
 
+    
 
     public void Init(string _playerID,string _playerName,Transform _modelTransform,bool _isNPC)
     {
@@ -94,6 +96,7 @@ public class Unit : MonoBehaviour
                 FallInSpace();
                 break;
             case Tools.FloorType.WALKABLE:
+            case Tools.FloorType.START:
                 gridObject.GetPlate().ToggleColor(Color.red, isRewind);
                 break;
            
@@ -162,6 +165,7 @@ public class Unit : MonoBehaviour
     }
 
     public bool CanPlayerMove(Tools.Directions direction) {
+
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
                     direction == Tools.Directions.BACK ? Vector3.back :
                     direction == Tools.Directions.LEFT ? Vector3.left :
@@ -185,6 +189,7 @@ public class Unit : MonoBehaviour
                 
                 return false;
             case Tools.FloorType.WALKABLE:
+            case Tools.FloorType.START:
                 if (gridObject.GetPlate().isActivePlate)
                     return false;
                 else
