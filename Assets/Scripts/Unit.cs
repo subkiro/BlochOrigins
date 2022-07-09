@@ -27,6 +27,7 @@ public class Unit : MonoBehaviour
 
     public Tween Move(Tools.Directions direction,bool isRewind)
     {
+        Debug.Log(direction);
         if (isActing) {
            DOTween.Kill(this, true);
           
@@ -228,13 +229,17 @@ public class Unit : MonoBehaviour
             return;
         }
 
+
+
         Sequence s = DOTween.Sequence();
         foreach (GridObject item in path)
         {
             Debug.Log($"{item?.GetPlate().x},{item?.GetPlate().y}");
             item?.GetPlate().ToggleColor(color: Color.yellow, false);
-            s.AppendInterval(1)
-                .Append(Move(GetDirectionToMove(this.GetPlayersGridObject().GetPlate(), item.GetPlate()), false));
+
+           
+            s.Append(Move(GetDirectionToMove(this.GetPlayersGridObject().GetPlate(), item.GetPlate()), false));
+            
         }
 
 
@@ -246,11 +251,12 @@ public class Unit : MonoBehaviour
     public Tools.Directions GetDirectionToMove(Plate fromPlate, Plate toPlate)
     {
 
-
+       
 
 
         if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
         {
+            
             return Tools.Directions.RIGHT;
         }
         if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
