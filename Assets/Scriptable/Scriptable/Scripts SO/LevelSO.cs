@@ -51,7 +51,7 @@ public class LevelSO : ScriptableObject
        // Debug.Log($" x Lenght: {x}, y lenth {y}");
 
         arrayList = new char[x, y];
-
+        
         for (int row = 0; row < x; row++)
         {
             

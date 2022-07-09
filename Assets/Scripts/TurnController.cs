@@ -76,6 +76,7 @@ public class TurnController : MonoBehaviour
        return (_actionRecorder.GetCount());
     }
 
+
     private void OnEnable()
     {
         InputManager.OnMove += OnMove;

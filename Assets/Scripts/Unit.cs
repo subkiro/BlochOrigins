@@ -25,7 +25,7 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public void Move(Tools.Directions direction,bool isRewind)
+    public Tween Move(Tools.Directions direction,bool isRewind)
     {
         if (isActing) {
            DOTween.Kill(this, true);
@@ -74,7 +74,7 @@ public class Unit : MonoBehaviour
             if(!isRewind) OnStepFinish(isRewind);
         });
         
-
+        return s;
     }
 
     public void OnStepFinish(bool isRewind) {
@@ -164,6 +164,9 @@ public class Unit : MonoBehaviour
         return s;
     }
 
+    public GridObject GetPlayersGridObject() {
+        return LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
+    }
     public bool CanPlayerMove(Tools.Directions direction) {
 
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
@@ -207,6 +210,73 @@ public class Unit : MonoBehaviour
         }
         
     }
+
+
+
+
+
+
+
+
+    //NPC MOVEMENT
+    public void NpcMovePathFinding(Plate moveToPlate)
+    {
+        List<GridObject> path = LevelManager.instance.FindPath(this.GetPlayersGridObject().x, this.GetPlayersGridObject().y, moveToPlate.x, moveToPlate.y);
+        if (path == null)
+        {
+            Debug.Log($"Path is null");
+            return;
+        }
+
+        Sequence s = DOTween.Sequence();
+        foreach (GridObject item in path)
+        {
+            Debug.Log($"{item?.GetPlate().x},{item?.GetPlate().y}");
+            item?.GetPlate().ToggleColor(color: Color.yellow, false);
+            s.AppendInterval(1)
+                .Append(Move(GetDirectionToMove(this.GetPlayersGridObject().GetPlate(), item.GetPlate()), false));
+        }
+
+
+       
+
+
+    }
+
+    public Tools.Directions GetDirectionToMove(Plate fromPlate, Plate toPlate)
+    {
+
+
+
+
+        if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
+        {
+            return Tools.Directions.RIGHT;
+        }
+        if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
+        {
+            return Tools.Directions.LEFT;
+        }
+        if (fromPlate.x < toPlate.x && fromPlate.y == toPlate.y)
+        {
+            return Tools.Directions.BACK;
+        }
+        if (fromPlate.x > toPlate.x && fromPlate.y == toPlate.y)
+        {
+            return Tools.Directions.FORWORD;
+        }
+
+        return Tools.Directions.FORWORD;
+    }
+
+
+
+
+
+
+
+
+
     private void OnEnable()
     {
         TurnController.OnTurnChanged += OnTurnChanged;

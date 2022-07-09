@@ -24,19 +24,19 @@ public class GameManager : MonoBehaviour
     private void SetupGame()
     {
 
-        InitLevel(0); 
+        InitLevel(1);
+     
+
+
         InitTurnController(InitPlayers("P1"), InitPlayers("P2",true));
-
-
-
-
         DG.Tweening.DOVirtual.DelayedCall(2, () => TurnController.instance.SetTurn(TurnController.instance.PlayerUnit));
 
+        
     }
 
 
     void InitLevel(int level) {
-        LevelManager.instance.GenerateLevel(listOfObjects.AllLevels[0], listOfObjects.AllPlates);
+        LevelManager.instance.GenerateLevel(listOfObjects.AllLevels[level], listOfObjects.AllPlates);
     }
 
     Unit  InitPlayers(string playerID, bool isNPC = false) {
@@ -57,5 +57,5 @@ public class GameManager : MonoBehaviour
         TurnController.instance.Init(Player, NpcPlayer);
     }
 
-    
+   
 }

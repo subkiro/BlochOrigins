@@ -23,8 +23,10 @@ public class InputManager : MonoBehaviour
                 case StateManager.State.Menu:
                     break;
                 case StateManager.State.PlayerRound:
-                case StateManager.State.NpcRound:
                     GameControlMovements();
+                    break;
+                case StateManager.State.NpcRound:
+                    NpcRandom();
                     break;
                 case StateManager.State.GameStarted:
                     break;
@@ -59,7 +61,15 @@ public class InputManager : MonoBehaviour
 
     }
 
-    private static void GameControlMovements()
+
+    public void NpcRandom() {
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            TurnController.instance.NpcUnit.NpcMovePathFinding(TurnController.instance.PlayerUnit.GetPlayersGridObject().GetPlate());
+        }
+        }
+        private void GameControlMovements()
     {
 
         if (Input.GetKeyDown(KeyCode.W))

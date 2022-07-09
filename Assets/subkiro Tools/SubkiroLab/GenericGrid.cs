@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GenericGrid<TGridObject>
 {
-    public int width = 5;
-    public int height = 5;
+    private int width = 10;
+    private int height = 10;
     public float cellSizeX,cellSizeY;
     private Vector3 originPosition;
     private TGridObject[,] gridArray;
@@ -82,4 +82,7 @@ public class GenericGrid<TGridObject>
         GetXY(worldPosition, out x, out y);
         return GetGridObject(x, y);
     }
+
+    public int GridWidh() => width;
+    public int GridHeight() => height;
 }

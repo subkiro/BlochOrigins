@@ -49,6 +49,8 @@ MonoBehaviour:
   SpecialDice: {fileID: 4714012169004804070, guid: 8f7f837cf059e0a46ab934658eb38d88, type: 3}
   UICamera: {fileID: 0}
   DiceNumber: {fileID: 0}
+  DiceResult: 0
+  AvaliableMovements: 0
 --- !u!1 &7492842377904403579
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,7 +61,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3521205838486986900}
   - component: {fileID: 7542551363167070210}
-  - component: {fileID: 8324321201174231075}
   m_Layer: 0
   m_Name: DiceCamera
   m_TagString: Untagged
@@ -125,11 +126,3 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &8324321201174231075
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7492842377904403579}
-  m_Enabled: 1

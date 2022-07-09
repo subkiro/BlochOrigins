@@ -29,6 +29,8 @@ public class Plate : MonoBehaviour
 
     public void ToggleColor(Color color, bool isRewin) {
 
+        
+
 
         if (isRewin)
         {
@@ -70,7 +72,7 @@ public class Plate : MonoBehaviour
 
     public void SetPlateColor(Color color,float speed = 1f)
     {
-
+        
         if (TryGetComponent<MeshRenderer>(out MeshRenderer mesh))
         {
 

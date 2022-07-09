@@ -15,3 +15,4 @@ MonoBehaviour:
   ID: _
   model: {fileID: 6615571635418423782, guid: 1eff1df5645794b85822c4704c2b95b2, type: 3}
   floorType: 0
+  DebuText: {fileID: 9157334583379514410, guid: f2a5eb2ca47346a4f97965af2dc706e4, type: 3}
