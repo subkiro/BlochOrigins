@@ -15,9 +15,6 @@ public class Unit : MonoBehaviour
     private float moveSpeed = 0.3f;
     private bool isActing;
     public int AvaliableMovement  => TurnController.instance.GetActionCounterResults();
-
-    
-
     public void Init(string _playerID,string _playerName,Transform _modelTransform,bool _isNPC)
     {
         this.playerID = _playerID;
@@ -26,12 +23,96 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public Sequence Move(Tools.Directions direction,bool isRewind)
+    #region PUBLIC FUNCTIONS
+    public void OnStepFinish(bool isRewind)
     {
-        if (isActing) {
+
+        GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
+        if (gridObject == null) { FallInSpace(); return; }
+
+        // Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
+
+
+
+        switch (gridObject.GetPlate().floorType)
+        {
+
+            case Tools.FloorType.FINISH:
+                Finish();
+                break;
+            case Tools.FloorType.EMPTY:
+                FallInSpace();
+                break;
+            case Tools.FloorType.WALKABLE:
+            case Tools.FloorType.START:
+                gridObject.GetPlate().ToggleColor(Color.red, isRewind);
+                break;
+
+
+        }
+    }
+    public GridObject GetPlayersGridObject()
+    {
+        return LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
+    }
+    public bool CanPlayerMove(Tools.Directions direction)
+    {
+
+        Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
+                    direction == Tools.Directions.BACK ? Vector3.back :
+                    direction == Tools.Directions.LEFT ? Vector3.left :
+                    Vector3.right;
+
+
+
+        Vector3 finalPosition = this.transform.position + movePosTarget;
+        GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)finalPosition.x, (int)finalPosition.z);
+
+        if (gridObject == null) { return false; }
+
+        Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
+
+
+        switch (gridObject.GetPlate().floorType)
+        {
+
+
+            case Tools.FloorType.NONWOKABLE:
+
+                return false;
+            case Tools.FloorType.WALKABLE:
+            case Tools.FloorType.START:
+                if (gridObject.GetPlate().isActivePlate)
+                    return false;
+                else
+                    return true;
+            default:
+                return true;
+
+
+        }
+    }
+    public void OnTurnChanged(Unit player)
+    {
+        if (isActing) return;
+        if (this == player)
+        {
+            Bounce();
+        }
+
+    }
+
+    #endregion
+
+    #region TWEENS
+
+    public Sequence Move(Tools.Directions direction, bool isRewind)
+    {
+        if (isActing)
+        {
             DOTween.Kill(this, true);
         }
-        
+
         isActing = true;
 
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
@@ -51,7 +132,7 @@ public class Unit : MonoBehaviour
 
 
 
-        
+
 
         Unit opponent = this.playerID == TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
         bool isOverlapingPlayers = (finalPosition == opponent.transform.localPosition);
@@ -62,7 +143,7 @@ public class Unit : MonoBehaviour
         if (isRewind) OnStepFinish(isRewind);
 
         Sequence s = DOTween.Sequence();
-       
+
         s.SetId(this);
         s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
         s.Join(this.transform.DOLocalRotate(rotationTarget, moveSpeed).SetEase(Ease.InFlash));
@@ -76,53 +157,28 @@ public class Unit : MonoBehaviour
         return s;
     }
 
-    public void OnStepFinish(bool isRewind) {
-
-        GridObject gridObject =   LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
-        if (gridObject == null) { FallInSpace(); return; }
-      
-       // Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
-        
+    public Tween FallInSpace()
+    {
 
 
-        switch (gridObject.GetPlate().floorType)
-        {
-
-            case Tools.FloorType.FINISH:
-                Finish();
-                break;
-            case Tools.FloorType.EMPTY:
-                FallInSpace();
-                break;
-            case Tools.FloorType.WALKABLE:
-            case Tools.FloorType.START:
-                gridObject.GetPlate().ToggleColor(Color.red, isRewind);
-                break;
-           
-
-        }
-    }  
-
-    public Tween FallInSpace() {
-
-        
 
         Sequence s = DOTween.Sequence();
         s.SetId(this);
         s.Append(this.transform.DOLocalMoveY(-3, .3f).SetEase(Ease.Linear));
         s.Join(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine));
-        s.OnComplete(() =>{
+        s.OnComplete(() => {
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
             TurnController.instance.ChangeTurn();
-           
+
         });
 
-        
+
 
         return s;
     }
 
-    public Tween Finish() {
+    public Tween Finish()
+    {
 
         StateManager.instance.SetState(StateManager.State.GameEnded);
 
@@ -143,9 +199,9 @@ public class Unit : MonoBehaviour
 
     public Tween Bounce()
     {
-        return PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetId(this).SetEase(Ease.InFlash);    
+        return PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetId(this).SetEase(Ease.InFlash);
     }
-   
+
     public Tween SpawnPlayer(Vector3 spawnPos)
     {
 
@@ -157,61 +213,9 @@ public class Unit : MonoBehaviour
 
         return s;
     }
+    #endregion
 
-    public GridObject GetPlayersGridObject() {
-        return LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
-    }
-    public bool CanPlayerMove(Tools.Directions direction) {
-
-        Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
-                    direction == Tools.Directions.BACK ? Vector3.back :
-                    direction == Tools.Directions.LEFT ? Vector3.left :
-                    Vector3.right;
-
-
-
-        Vector3 finalPosition = this.transform.position + movePosTarget;
-        GridObject gridObject = LevelManager.instance.grid.GetGridObject((int) finalPosition.x,(int) finalPosition.z);
-
-        if (gridObject == null) {  return false; }
-
-        Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
-
-
-        switch (gridObject.GetPlate().floorType)
-        {
-
-           
-            case Tools.FloorType.NONWOKABLE:
-                
-                return false;
-            case Tools.FloorType.WALKABLE:
-            case Tools.FloorType.START:
-                if (gridObject.GetPlate().isActivePlate)
-                    return false;
-                else
-                    return true;
-            default:
-                return true;
-
-
-        }
-    }
-    public void OnTurnChanged(Unit player) {
-        if (isActing) return;
-        if (this == player) {
-            Bounce();
-        }
-        
-    }
-
-
-
-
-
-
-
-
+    #region PATHFINDING MOVEMENT
     //NPC MOVEMENT
     public async void NpcMovePathFinding(Plate moveToPlate)
     {
@@ -248,7 +252,6 @@ public class Unit : MonoBehaviour
 
 
     }
-
     public Tools.Directions GetDirectionToMove(int fromX,int fromY, int toX,int toY)
     {
         Tools.Directions direction ;
@@ -275,7 +278,7 @@ public class Unit : MonoBehaviour
         Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}  direction: {direction}");
         return direction;
     }
-
+    #endregion
 
     private void OnEnable()
     {
