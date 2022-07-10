@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour
     public bool isNpc;
     private float moveSpeed = 0.3f;
     private bool isActing;
-    public int movementCounter = 0;
+    public int AvaliableMovement  => TurnController.instance.GetActionCounterResults();
 
     
 
@@ -26,17 +26,13 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public Task Move(Tools.Directions direction,bool isRewind)
+    public Sequence Move(Tools.Directions direction,bool isRewind)
     {
-        Debug.Log(direction);
         if (isActing) {
-           DOTween.Kill(this, true);
-          
+            DOTween.Kill(this, true);
         }
-
-       
-       
-    
+        
+        isActing = true;
 
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
                     direction == Tools.Directions.BACK ? Vector3.back :
@@ -68,17 +64,16 @@ public class Unit : MonoBehaviour
         Sequence s = DOTween.Sequence();
        
         s.SetId(this);
-        s.OnStart(() => isActing = true);
         s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
         s.Join(this.transform.DOLocalRotate(rotationTarget, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
+        s.Append(Bounce());
         s.OnComplete(() => {
-            if(!isRewind) OnStepFinish(isRewind);
+            isActing = false;
+            if (!isRewind) OnStepFinish(isRewind);
         });
-        Task task = s.AsyncWaitForCompletion();
-
-        return task;
+        return s;
     }
 
     public void OnStepFinish(bool isRewind) {
@@ -86,7 +81,7 @@ public class Unit : MonoBehaviour
         GridObject gridObject =   LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
         if (gridObject == null) { FallInSpace(); return; }
       
-        Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
+       // Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
         
 
 
@@ -117,8 +112,8 @@ public class Unit : MonoBehaviour
         s.Append(this.transform.DOLocalMoveY(-3, .3f).SetEase(Ease.Linear));
         s.Join(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine));
         s.OnComplete(() =>{
-            TurnController.instance.ChangeTurn();
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+            TurnController.instance.ChangeTurn();
            
         });
 
@@ -137,8 +132,9 @@ public class Unit : MonoBehaviour
         s.Append(this.transform.DOLocalMoveY(2, .5f).SetEase(Ease.OutBack));
         s.Append(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutFlash));
         s.OnComplete(() => {
-            TurnController.instance.ChangeTurn();
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+            TurnController.instance.ChangeTurn();
+
 
         });
 
@@ -147,13 +143,7 @@ public class Unit : MonoBehaviour
 
     public Tween Bounce()
     {
-
-        Sequence s = DOTween.Sequence();
-        s.SetId(this);
-        s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
-        s.OnComplete(() => isActing = false);
-
-        return s;
+        return PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetId(this).SetEase(Ease.InFlash);    
     }
    
     public Tween SpawnPlayer(Vector3 spawnPos)
@@ -231,54 +221,60 @@ public class Unit : MonoBehaviour
             Debug.Log($"Path is null");
             return;
         }
+        int avaliableSteps = (DiceController.instance.DiceResult+1 < path.Count)? DiceController.instance.DiceResult+1 : path.Count;
+        Debug.Log($"Avaliable Steps {avaliableSteps}");
 
-
-        for (int i = 1; i < path.Count; i++)
+        for (int i = 0; i < avaliableSteps; i++)
         {
+            if (i == 0) continue; //this is my position
+            Task movement;
             path[i]?.GetPlate().ToggleColor(color: Color.yellow, false);
             int fromX = this.GetPlayersGridObject().GetPlate().x;
             int fromY = this.GetPlayersGridObject().GetPlate().y;
             int toX = path[i].GetPlate().x;
             int toY = path[i].GetPlate().y;
-            await Move(GetDirectionToMove(fromX, fromY, toX, toY), false);
-        }
-        
+            movement = Move(GetDirectionToMove(fromX, fromY, toX, toY), false).AsyncWaitForCompletion();
+           
+            await movement;
 
-       
+        }
+
+
+        await Task.Delay(2000);
+        TurnController.instance.ChangeTurn();
+
+
+
 
 
     }
 
     public Tools.Directions GetDirectionToMove(int fromX,int fromY, int toX,int toY)
     {
-        Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}");
-
+        Tools.Directions direction ;
         if (fromX == toX && fromY < toY)
         {         
-            return Tools.Directions.FORWORD;
+            direction = Tools.Directions.FORWORD;
         }
-        if (fromX == toX && fromY < toY)
+        else if (fromX == toX && fromY > toY)
         {
-            return Tools.Directions.RIGHT;
+            direction = Tools.Directions.BACK;
         }
-        if (fromX < toX && fromY == toY)
+        else if (fromX < toX && fromY == toY)
         {
-            return Tools.Directions.BACK;
+            direction = Tools.Directions.RIGHT;
         }
-        if (fromX > toX && fromY == toY)
+        else if(fromX > toX && fromY == toY)
         {
-            return Tools.Directions.LEFT;
+            direction = Tools.Directions.LEFT;
         }
+        else {
 
-        return Tools.Directions.FORWORD;
+            direction = Tools.Directions.FORWORD;
+        }
+        Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}  direction: {direction}");
+        return direction;
     }
-
-
-
-
-
-
-
 
 
     private void OnEnable()

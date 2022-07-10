@@ -158,16 +158,10 @@ public  class LevelManager : MonoBehaviour
 
                     case Tools.FloorType.NONWOKABLE:
                     case Tools.FloorType.EMPTY:
-                        Debug.Log($"Nonwokable : {neighbourNode.GetPlate().x},{neighbourNode.GetPlate().y}");
                         CloseList.Add(neighbourNode); 
                         continue;
                 }
-
-
-                if (neighbourNode.GetPlate().floorType != Tools.FloorType.WALKABLE)
-                {
-                   
-                }
+ 
                 int tentativeGCost = currenNode.gCost + CalculateDistanceCost(neighbourNode, endNode);
                 if (tentativeGCost < neighbourNode.gCost) {
                     neighbourNode.cameFrom = currenNode;
@@ -177,7 +171,6 @@ public  class LevelManager : MonoBehaviour
 
                     if (!OpenList.Contains(neighbourNode)) {
                         OpenList.Add(neighbourNode);
-                        Debug.Log($"OpenLists : {neighbourNode.GetPlate().x},{neighbourNode.GetPlate().y}");
                     }
                 }
             }

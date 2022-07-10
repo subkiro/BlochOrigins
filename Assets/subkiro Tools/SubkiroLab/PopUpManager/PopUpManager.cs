@@ -32,7 +32,7 @@ public class PopUpManager : MonoBehaviour
         }
 
     }
-    public T Show<T>(GameObject prefab, Transform parent = null, bool withBlur = true, float FadeMoveYPos = 50,  float FadeSpeed = 0.2f,  params GameObject[] skipBlureList)
+    public T Show<T>(GameObject prefab, Transform parent = null, bool withBlur = true, float FadeMoveY_Start = 50,float FadeMoveY_End = 0, float FadeSpeed = 0.2f,  params GameObject[] skipBlureList)
     {
         Transform parentObject;
         if (parent == null) parentObject = this.transform;
@@ -53,12 +53,12 @@ public class PopUpManager : MonoBehaviour
 
         Sequence s = DOTween.Sequence();
         s.SetId(popUp).SetUpdate(true);
-        s.Join(viewRect?.DOAnchorPosY(0, FadeSpeed).From(-Vector2.one * FadeMoveYPos).SetEase(Ease.OutBack));
+        s.Join(viewRect?.DOAnchorPosY(FadeMoveY_End, FadeSpeed).From(Vector2.one * FadeMoveY_Start).SetEase(Ease.OutBack));
         s.Join(MainInfoGroup?.DOFade(1, FadeSpeed));        //All prefabs should implement interface WindowUI
 
 
-        (popUp as PopUp).Show(() => Hide(popUp as PopUp,FadeMoveYPos,FadeSpeed));
-        (popUp as PopUp).OnCompleteBase = () => Hide(popUp as PopUp, FadeMoveYPos, FadeSpeed);
+        (popUp as PopUp).Show(() => Hide(popUp as PopUp,FadeMoveY_Start,FadeSpeed));
+        (popUp as PopUp).OnCompleteBase = () => Hide(popUp as PopUp, FadeMoveY_Start, FadeSpeed);
         (popUp as PopUp).blureUsed = withBlur;
 
         AddToPool(popUp as PopUp);

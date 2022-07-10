@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.Events;
+
 public class DiceController : MonoBehaviour
 {
     public GameObject NormalDice;
@@ -12,7 +14,7 @@ public class DiceController : MonoBehaviour
     public static DiceController instance;
     private GameObject diceNormal,diceSpecial;
     public int DiceResult;
-    public int AvaliableMovements;
+
     private void Awake()
     {
         instance = this;
@@ -22,41 +24,37 @@ public class DiceController : MonoBehaviour
         diceSpecial.transform.localScale = Vector3.zero;
     }
 
-    public void TestThrowDice() {
-        ThrowDice(TurnController.instance.GetCurrentUnit());
-        
-    }
 
-    public void ThrowDice(Unit player) {
+    public void ThrowDice(Unit player, UnityAction _OnComplete) {
         StateManager.instance.SetState(StateManager.State.Dice);
         if (TurnController.instance.IsNpc(player))
         {
-            ThrowDiceNpc(player);
+            ThrowDiceNpc(player, _OnComplete);
         }
         else {
-            ThrowDicePlayer(player);
+            ThrowDicePlayer(player, _OnComplete);
            }
       
     }
 
 
-    public void ThrowDiceNpc(Unit player) {
-        AnimateDice(player);
+    public void ThrowDiceNpc(Unit player,UnityAction _OnComplete) {
+        AnimateDice(player, isDiceSpecial: false, _OnComplete);
     }
-    public void ThrowDicePlayer(Unit player)
+    public void ThrowDicePlayer(Unit player, UnityAction _OnComplete)
     {
-        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo, withBlur: false);
-        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player,true), () => AnimateDice(player), NoButtonText: "Normal",YesButtonText: "Special");
+        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo,FadeMoveY_Start:500,FadeMoveY_End: 200, withBlur: false);
+        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player, isDiceSpecial: true, _OnComplete), () => AnimateDice(player,isDiceSpecial: false, _OnComplete), NoButtonText: "Normal",YesButtonText: "Special");
 
 
     }
-    public void AnimateDice(Unit player,bool isDiceSpecial = false) {
+    public Sequence AnimateDice(Unit player,bool isDiceSpecial, UnityAction _OnComplete) {
         
         StateManager.instance.SetState(StateManager.State.Dice);
         Transform dice = (isDiceSpecial) ? diceSpecial.transform : diceNormal.transform;
 
        
-
+        
         Sequence s = DOTween.Sequence();
 
         s.Join(DiceNumber.DOScale(0, 0));
@@ -66,8 +64,9 @@ public class DiceController : MonoBehaviour
         s.AppendInterval(.5f);
         s.Append(dice.transform.DOScale(Vector3.zero, 0.3f));
         s.Append(DiceNumber.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack));
-        s.AppendCallback(() => StateManager.instance.SetState((TurnController.instance.IsNpc(player)) ? StateManager.State.NpcRound : StateManager.State.PlayerRound));
+        s.OnComplete(()=>_OnComplete?.Invoke());
 
+        return s;
     }
 
     public Vector3 OpenDice(bool isDiceSpecial) {

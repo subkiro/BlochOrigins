@@ -24,23 +24,38 @@ public class TurnController : MonoBehaviour
         Instantiate(ArrowControler);
     }
 
-    public void SetTurn(Unit player) {
+    public void StartTurn(Unit player) {
 
-      
+        StateManager.instance.SetState(player.isNpc ? StateManager.State.NpcRound : StateManager.State.PlayerRound);
         m_currentTurnUnit = player;
-        DiceController.instance.ThrowDice(player);
         OnTurnChanged?.Invoke(m_currentTurnUnit);
         ArrowIndicator.instance.Init(m_currentTurnUnit);
         _actionRecorder.Reset();
 
+        if (m_currentTurnUnit.isNpc) {
+            StartNpcMove();
+        }
+
     }
     public void ChangeTurn()
     {
+        if (m_currentTurnUnit == null) m_currentTurnUnit = PlayerUnit; // first start
+        else
         m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit:PlayerUnit;
 
-        SetTurn(m_currentTurnUnit);
+
+        StateManager.instance.SetState(m_currentTurnUnit.isNpc ? StateManager.State.NpcRound : StateManager.State.PlayerRound);
+
+        DiceController.instance.ThrowDice(m_currentTurnUnit,()=> StartTurn(m_currentTurnUnit));
 
     }
+
+    public void StartNpcMove() {
+
+        TurnController.instance.NpcUnit.NpcMovePathFinding(TurnController.instance.PlayerUnit.GetPlayersGridObject().GetPlate());
+
+    }
+
     public void Init(Unit _PlayerUnit, Unit _NpcUnit)
     {
         
