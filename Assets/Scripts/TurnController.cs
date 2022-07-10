@@ -66,15 +66,26 @@ public class TurnController : MonoBehaviour
        
     }
     public void Rewind() {
-        _actionRecorder.Rewind();
-        OnStepExecuted?.Invoke(GetActionCounterResults());
+       
 
+      
+            _actionRecorder.Rewind();
+            OnStepExecuted?.Invoke(GetActionCounterResults());
+        
     }
 
     public int GetActionCounterResults() {
 
        return (_actionRecorder.GetCount());
     }
+
+
+
+
+
+
+
+
 
 
     private void OnEnable()

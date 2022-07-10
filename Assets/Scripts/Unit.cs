@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Threading.Tasks;
 
 public class Unit : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class Unit : MonoBehaviour
         this.isNpc = _isNPC;
     }
 
-    public Tween Move(Tools.Directions direction,bool isRewind)
+    public Task Move(Tools.Directions direction,bool isRewind)
     {
         Debug.Log(direction);
         if (isActing) {
@@ -65,6 +66,7 @@ public class Unit : MonoBehaviour
         if (isRewind) OnStepFinish(isRewind);
 
         Sequence s = DOTween.Sequence();
+       
         s.SetId(this);
         s.OnStart(() => isActing = true);
         s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
@@ -74,8 +76,9 @@ public class Unit : MonoBehaviour
         s.OnComplete(() => {
             if(!isRewind) OnStepFinish(isRewind);
         });
-        
-        return s;
+        Task task = s.AsyncWaitForCompletion();
+
+        return task;
     }
 
     public void OnStepFinish(bool isRewind) {
@@ -220,7 +223,7 @@ public class Unit : MonoBehaviour
 
 
     //NPC MOVEMENT
-    public void NpcMovePathFinding(Plate moveToPlate)
+    public async void NpcMovePathFinding(Plate moveToPlate)
     {
         List<GridObject> path = LevelManager.instance.FindPath(this.GetPlayersGridObject().x, this.GetPlayersGridObject().y, moveToPlate.x, moveToPlate.y);
         if (path == null)
@@ -230,46 +233,41 @@ public class Unit : MonoBehaviour
         }
 
 
-
-        Sequence s = DOTween.Sequence();
-        foreach (GridObject item in path)
+        for (int i = 1; i < path.Count; i++)
         {
-            Debug.Log($"{item?.GetPlate().x},{item?.GetPlate().y}");
-            item?.GetPlate().ToggleColor(color: Color.yellow, false);
-
-           
-            s.Append(Move(GetDirectionToMove(this.GetPlayersGridObject().GetPlate(), item.GetPlate()), false));
-            
+            path[i]?.GetPlate().ToggleColor(color: Color.yellow, false);
+            int fromX = this.GetPlayersGridObject().GetPlate().x;
+            int fromY = this.GetPlayersGridObject().GetPlate().y;
+            int toX = path[i].GetPlate().x;
+            int toY = path[i].GetPlate().y;
+            await Move(GetDirectionToMove(fromX, fromY, toX, toY), false);
         }
-
+        
 
        
 
 
     }
 
-    public Tools.Directions GetDirectionToMove(Plate fromPlate, Plate toPlate)
+    public Tools.Directions GetDirectionToMove(int fromX,int fromY, int toX,int toY)
     {
+        Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}");
 
-       
-
-
-        if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
+        if (fromX == toX && fromY < toY)
+        {         
+            return Tools.Directions.FORWORD;
+        }
+        if (fromX == toX && fromY < toY)
         {
-            
             return Tools.Directions.RIGHT;
         }
-        if (fromPlate.x == toPlate.x && fromPlate.y < toPlate.y)
-        {
-            return Tools.Directions.LEFT;
-        }
-        if (fromPlate.x < toPlate.x && fromPlate.y == toPlate.y)
+        if (fromX < toX && fromY == toY)
         {
             return Tools.Directions.BACK;
         }
-        if (fromPlate.x > toPlate.x && fromPlate.y == toPlate.y)
+        if (fromX > toX && fromY == toY)
         {
-            return Tools.Directions.FORWORD;
+            return Tools.Directions.LEFT;
         }
 
         return Tools.Directions.FORWORD;
