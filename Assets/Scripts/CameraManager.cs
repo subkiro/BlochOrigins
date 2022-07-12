@@ -26,23 +26,18 @@ public class CameraManager : MonoBehaviour
         {
 
             case StateManager.State.PlayerRound:
-                GamePlay_Normal.Follow = TurnController.instance.PlayerUnit.transform;
-                GamePlay_Normal.LookAt = TurnController.instance.PlayerUnit.transform;
-                CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Normal.ToString());
+                SetCameraState(CameraStates.GamePlay_Normal);
                 break;
             case StateManager.State.NpcRound:
-                GamePlay_Npc.Follow = TurnController.instance.NpcUnit.transform;
-                GamePlay_Npc.LookAt = TurnController.instance.NpcUnit.transform;
-                CameraStateAnimator.SetTrigger(CameraStates.GamePlay_Npc.ToString());       
-            break;           
+                SetCameraState(CameraStates.GamePlay_Npc);
+                break;           
                  case StateManager.State.GameStarted:
-                 CameraStateAnimator.SetTrigger(CameraStates.TopDown.ToString());
+                SetCameraState(CameraStates.TopDown);
             break;
             case StateManager.State.Dice:
-                GamePlay_Normal.Follow = default;
-                GamePlay_Normal.LookAt = default;
-                GamePlay_Npc.Follow = default;
-                GamePlay_Npc.LookAt = default;
+                GamePlay_Normal.Follow = TurnController.instance.GetCurrentUnit().transform;
+                GamePlay_Normal.LookAt = TurnController.instance.GetCurrentUnit().transform;
+           
                 break;
 
         }
@@ -52,8 +47,25 @@ public class CameraManager : MonoBehaviour
 
 
     public void SetCameraState(CameraStates state, Transform lootAt = null) {
-       
-        CameraStateAnimator.SetTrigger(state.ToString());
+
+        switch (state)
+        {
+            case CameraStates.GamePlay_Normal:
+                GamePlay_Normal.Follow = TurnController.instance.PlayerUnit.transform;
+                //GamePlay_Normal.LookAt = TurnController.instance.PlayerUnit.transform;
+                CameraStateAnimator.SetTrigger(state.ToString());
+                break;
+            case CameraStates.GamePlay_Npc:
+                GamePlay_Npc.Follow = TurnController.instance.NpcUnit.transform;
+             //   GamePlay_Npc.LookAt = TurnController.instance.NpcUnit.transform;
+                CameraStateAnimator.SetTrigger(state.ToString());
+                break;
+            case CameraStates.TopDown:
+                TopDown.Follow = TurnController.instance.GetCurrentUnit().transform;
+               // TopDown.LookAt = TurnController.instance.GetCurrentUnit().transform;
+                break;
+          
+        }
        
 
     }

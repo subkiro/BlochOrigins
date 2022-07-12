@@ -48,7 +48,9 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+
             CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
+
         }
 
         if (Input.GetKeyUp(KeyCode.Space))

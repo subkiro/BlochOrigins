@@ -82,10 +82,10 @@ public class ArrowIndicator : MonoBehaviour
                 this.transform.DOScale(1, 0.5f).SetEase(Ease.OutBack).OnStart(() => { ArrowModel.gameObject.SetActive(true); });
                 break;
             case StateManager.State.NpcRound:
-                this.transform.DOScale(0, 0).OnComplete(() => { ArrowModel.gameObject.SetActive(false); });
-                
+                this.transform.DOScale(0, 0).OnComplete(() => { ArrowModel.gameObject.SetActive(false); });                
                 break;
             default:
+                this.transform.DOScale(0, 0.3f).SetEase(Ease.OutBack);
                 break;
         }
     }

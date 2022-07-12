@@ -97,7 +97,7 @@ public class Unit : MonoBehaviour
         if (isActing) return;
         if (this == player)
         {
-            Bounce();
+            BounceJump();
         }
 
     }
@@ -149,7 +149,7 @@ public class Unit : MonoBehaviour
         s.Join(this.transform.DOLocalRotate(rotationTarget, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
-        s.Append(Bounce());
+        s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => {
             isActing = false;
             if (!isRewind) OnStepFinish(isRewind);
@@ -159,21 +159,15 @@ public class Unit : MonoBehaviour
 
     public Tween FallInSpace()
     {
-
-
-
         Sequence s = DOTween.Sequence();
         s.SetId(this);
         s.Append(this.transform.DOLocalMoveY(-3, .3f).SetEase(Ease.Linear));
         s.Join(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine));
         s.OnComplete(() => {
+            isActing = false;
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
             TurnController.instance.ChangeTurn();
-
         });
-
-
-
         return s;
     }
 
@@ -183,23 +177,30 @@ public class Unit : MonoBehaviour
         StateManager.instance.SetState(StateManager.State.GameEnded);
 
         Sequence s = DOTween.Sequence();
+        s.SetId(this);
         s.Join(this.transform.DOLocalMoveY(.5f, 2).SetEase(Ease.InOutSine));
         s.Join(this.PlayerModel.DOShakePosition(2, 0.05f).SetEase(Ease.InOutSine));
         s.Append(this.transform.DOLocalMoveY(2, .5f).SetEase(Ease.OutBack));
         s.Append(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutFlash));
         s.OnComplete(() => {
+            isActing = false;
             SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
             TurnController.instance.ChangeTurn();
-
-
         });
 
         return s;
     }
 
-    public Tween Bounce()
+    public Tween BounceJump()
     {
-        return PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetId(this).SetEase(Ease.InFlash);
+        Sequence s = DOTween.Sequence();
+
+        s.SetId(this);
+        s.Join(PlayerModel.DOLocalJump( Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
+        s.OnComplete(() => {
+            isActing = false;       
+        });
+        return s;
     }
 
     public Tween SpawnPlayer(Vector3 spawnPos)

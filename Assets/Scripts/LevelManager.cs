@@ -112,8 +112,8 @@ public  class LevelManager : MonoBehaviour
         Debug.Log($"startNode : {startNode.x},{startNode.y}");
         Debug.Log($"endNode : {endNode.x},{endNode.y}");
 
-        startNode.GetPlate().SetPlateColor(color: Color.black);
-        endNode.GetPlate().SetPlateColor(color: Color.red);
+       // startNode.GetPlate().SetPlateColor(color: Color.black);
+       // endNode.GetPlate().SetPlateColor(color: Color.red);
 
         OpenList = new List<GridObject> { startNode };
         CloseList = new List<GridObject> ();
