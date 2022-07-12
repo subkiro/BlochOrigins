@@ -21,7 +21,6 @@ public class Plate : MonoBehaviour
         this.ID = floorPlateSO.ID;
         this.floorType = floorPlateSO.floorType;
         OriginalColor = GetPlateColor();
-        
 
     }
 
@@ -85,7 +84,7 @@ public class Plate : MonoBehaviour
 
         
     }
-
+   
 
     public void OnStateChanged(StateManager.State state) {
         Reset();

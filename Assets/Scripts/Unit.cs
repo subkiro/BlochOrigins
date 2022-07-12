@@ -46,6 +46,7 @@ public class Unit : MonoBehaviour
             case Tools.FloorType.WALKABLE:
             case Tools.FloorType.START:
                 gridObject.GetPlate().ToggleColor(Color.red, isRewind);
+                SpecialEventManager.instance.ClaimSpecialEvent(this, gridObject.GetPlate());
                 break;
 
 
@@ -69,8 +70,6 @@ public class Unit : MonoBehaviour
         GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)finalPosition.x, (int)finalPosition.z);
 
         if (gridObject == null) { return false; }
-
-        Debug.Log($"Im on: {gridObject.GetPlate().floorType}  x: {gridObject.x} y: {gridObject.y}");
 
 
         switch (gridObject.GetPlate().floorType)

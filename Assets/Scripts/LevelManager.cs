@@ -43,7 +43,7 @@ public  class LevelManager : MonoBehaviour
         int y = level.Y;
 
         GenericGrid<GridObject> tmpGrid = new GenericGrid<GridObject>(x, y, 10f, 10f, new Vector3(-x / 2, -y / 2, 0), (GenericGrid<GridObject> g, int x, int y) => new GridObject(g, x, y));
-        Debug.Log($"X: {tmpGrid.GridWidh()}, Y: {tmpGrid.GridHeight()}");
+        Debug.Log($"X: {tmpGrid.GridWidth()}, Y: {tmpGrid.GridHeight()}");
         return tmpGrid;
     }
     public GenericGrid<GridObject> FillGrid(GenericGrid<GridObject> grid, LevelSO level)
@@ -73,7 +73,7 @@ public  class LevelManager : MonoBehaviour
     }
     public void AnimateGirid(GenericGrid<GridObject> grid) {
 
-        for (int x = 0; x < grid.GridWidh(); x++)
+        for (int x = 0; x < grid.GridWidth(); x++)
         {
             for (int y = 0; y < grid.GridHeight(); y++)
             {
@@ -103,7 +103,7 @@ public  class LevelManager : MonoBehaviour
     public List<GridObject> FindPath(int startX, int startY, int endX, int endY) {
 
 
-        Debug.Log($"Grid Width: {grid.GridWidh()}, grid Height: {grid.GridHeight()}");
+        Debug.Log($"Grid Width: {grid.GridWidth()}, grid Height: {grid.GridHeight()}");
 
 
         GridObject startNode = grid.GetGridObject(startX,startY);
@@ -119,7 +119,7 @@ public  class LevelManager : MonoBehaviour
         CloseList = new List<GridObject> ();
 
 
-        for (int x = 0; x < grid.GridWidh(); x++)
+        for (int x = 0; x < grid.GridWidth(); x++)
         {
             for (int y = 0; y < grid.GridHeight(); y++)
             {
@@ -189,7 +189,7 @@ public  class LevelManager : MonoBehaviour
             //left
             neighbourList.Add(grid.GetGridObject(currnetNode.x - 1, currnetNode.y));
         }
-        if (currnetNode.x + 1 < grid.GridWidh()) {
+        if (currnetNode.x + 1 < grid.GridWidth()) {
             //Right
             neighbourList.Add(grid.GetGridObject(currnetNode.x + 1, currnetNode.y));
         

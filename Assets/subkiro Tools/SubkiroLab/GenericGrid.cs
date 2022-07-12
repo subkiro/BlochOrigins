@@ -83,6 +83,6 @@ public class GenericGrid<TGridObject>
         return GetGridObject(x, y);
     }
 
-    public int GridWidh() => width;
+    public int GridWidth() => width;
     public int GridHeight() => height;
 }

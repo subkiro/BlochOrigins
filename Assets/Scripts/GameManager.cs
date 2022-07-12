@@ -5,6 +5,7 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     public ListOfObjects listOfObjects;
+    public PlayerInfoPanel playerInfo, playerInfoNpc;
    
     // Start is called before the first frame update
 
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
     {
 
         InitLevel(0);
+        SpecialEventManager.instance.InitEvents(LevelManager.instance.grid);
         InitTurnController(InitPlayers("P1"), InitPlayers("P2",true));
         DG.Tweening.DOVirtual.DelayedCall(2, () => TurnController.instance.ChangeTurn());
 
@@ -38,12 +40,16 @@ public class GameManager : MonoBehaviour
 
     Unit  InitPlayers(string playerID, bool isNPC = false) {
 
+
         PlayerSO playerData = listOfObjects.AllPlayerModels.Find(x => x.PlayerID == playerID);
         if (playerData == null) { Debug.Log("Player with ID: " + playerID + " Not Found"); return null; }
 
         Unit  player = playerData.CreatePlayer(LevelManager.instance.transform, isNPC);
-        Debug.Log("Position: " + LevelManager.instance.GetPlayerStartPosition(player));
-        player.SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(player));    
+        player.SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(player));
+
+        //SetupInfoPanel
+        if (isNPC) { playerInfoNpc.SetupInfoPanel(player); }
+        else { playerInfo.SetupInfoPanel(player); }
 
         return player;
     }
