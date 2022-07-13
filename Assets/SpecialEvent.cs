@@ -21,8 +21,7 @@ public class SpecialEvent: MonoBehaviour {
             item.text = "x" + _amount;
         }
 
-        this.Container.DOLocalMoveY(0.2f, 2).SetEase(Ease.InOutSine).SetRelative().SetLoops(-1, LoopType.Yoyo).SetId(this);
-        this.Container.DOLocalRotate(new Vector3(0,45f,0),5,RotateMode.Fast).SetRelative().SetLoops(-1, LoopType.Yoyo).SetId(this);
+        this.Container.DORotate(new Vector3(90, 0, 0),0 ).SetId(this);
         return this;
     }
 
@@ -43,7 +42,7 @@ public class SpecialEvent: MonoBehaviour {
     }
 
 
-    public enum SpecialEventType { None,Gold, Diamond }
+    public enum SpecialEventType { None,Gold, Diamond,Rewinds }
 
 
 

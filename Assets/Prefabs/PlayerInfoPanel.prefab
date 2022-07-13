@@ -912,8 +912,11 @@ MonoBehaviour:
   Player: {fileID: 0}
   DiamondText: {fileID: 7157755790012786544}
   GoldText: {fileID: 7157755789130051423}
+  RewindText: {fileID: 7157755790585820411}
   DisplayNametext: {fileID: 7157755790473290652}
-  RewindText: {fileID: 7157755790012786544}
+  GoldIcon: {fileID: 7157755790277071622}
+  DiamondIcon: {fileID: 7157755790625369393}
+  RewindsIcon: {fileID: 7157755790253328781}
   m_diamonds: 0
   m_golds: 0
   m_rewinds: 0

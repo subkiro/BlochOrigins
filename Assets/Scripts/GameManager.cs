@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     private void SetupGame()
     {
 
-        InitLevel(0);
+        InitLevel(1);
         SpecialEventManager.instance.InitEvents(LevelManager.instance.grid);
         InitTurnController(InitPlayers("P1"), InitPlayers("P2",true));
         DG.Tweening.DOVirtual.DelayedCall(2, () => TurnController.instance.ChangeTurn());

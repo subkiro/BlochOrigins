@@ -52,9 +52,38 @@ public class TurnController : MonoBehaviour
 
     public void StartNpcMove() {
 
-        TurnController.instance.NpcUnit.NpcMovePathFinding(TurnController.instance.PlayerUnit.GetPlayersGridObject().GetPlate());
+        // TurnController.instance.NpcUnit.NpcMovePathFinding(TurnController.instance.PlayerUnit.GetPlayersGridObject().GetPlate());
+        TurnController.instance.NpcUnit.NpcMovePathFinding();
 
     }
+
+    public List<GridObject> GetNearestEventPath(Unit Player)
+    {
+        List<GridObject> nearestPath=new List<GridObject>();
+        int stepNeeded = 1000;
+
+        foreach (var item in SpecialEventManager.instance.SpecialEvents)
+        {
+
+            List<GridObject> path = LevelManager.instance.FindPath(Player.GetPlayersGridObject().x, Player.GetPlayersGridObject().y, item.x, item.y);
+            if (path == null)
+            {
+                Debug.Log($"Path is null");
+                return null;
+            }
+
+            if (path.Count < stepNeeded) {
+                stepNeeded = path.Count;
+                nearestPath = path;
+            }
+
+        }
+
+        return nearestPath;
+    }
+
+
+
 
     public void Init(Unit _PlayerUnit, Unit _NpcUnit)
     {
@@ -63,22 +92,24 @@ public class TurnController : MonoBehaviour
         NpcUnit = _NpcUnit;
 
     }
-
-
+    public int GetAvaliableSteps() {
+        int counter = DiceController.instance.DiceResult - GetActionCounterResults();
+        Debug.Log("StepsLeft: " + counter);
+        return counter;
+    }
     public Unit GetCurrentUnit() => m_currentTurnUnit;
     public bool IsNpc(Unit player) {
         return (player.playerID != PlayerUnit.playerID);
     }
     public void OnMove(Tools.Directions direction)
     {
-        if (m_currentTurnUnit.CanPlayerMove(direction) && DiceResult-GetActionCounterResults()>0) {
+        if (m_currentTurnUnit.CanPlayerMove(direction) && GetAvaliableSteps()>0) {
            
             var action = new MoveAction(m_currentTurnUnit, direction);
             _actionRecorder.Record(action);
             OnStepExecuted?.Invoke(GetActionCounterResults());
         }
-       
-       
+  
     }
     public void Rewind() {
        
@@ -88,16 +119,10 @@ public class TurnController : MonoBehaviour
             OnStepExecuted?.Invoke(GetActionCounterResults());
         
     }
-
     public int GetActionCounterResults() {
 
        return (_actionRecorder.GetCount());
     }
-
-
-
-
-
 
 
 

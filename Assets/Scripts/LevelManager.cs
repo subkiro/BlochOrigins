@@ -109,8 +109,8 @@ public  class LevelManager : MonoBehaviour
         GridObject startNode = grid.GetGridObject(startX,startY);
         GridObject endNode = grid.GetGridObject(endX, endY);
 
-        Debug.Log($"startNode : {startNode.x},{startNode.y}");
-        Debug.Log($"endNode : {endNode.x},{endNode.y}");
+      //  Debug.Log($"startNode : {startNode.x},{startNode.y}");
+      //  Debug.Log($"endNode : {endNode.x},{endNode.y}");
 
        // startNode.GetPlate().SetPlateColor(color: Color.black);
        // endNode.GetPlate().SetPlateColor(color: Color.red);

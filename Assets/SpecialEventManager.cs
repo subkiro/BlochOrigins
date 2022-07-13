@@ -7,7 +7,7 @@ using System.Linq;
 public class SpecialEventManager: MonoBehaviour 
 {
     public static SpecialEventManager instance;
-    public GameObject GoldPrefab, DiamondPrefab; 
+    public GameObject GoldPrefab, DiamondPrefab,RewindPrefab; 
     public List<SpecialEvent> SpecialEvents;
     public static UnityAction<Unit, SpecialEvent> OnEventClaimed;
     private void Awake()
@@ -35,15 +35,22 @@ public class SpecialEventManager: MonoBehaviour
             case "G":
                 eventObj = Instantiate(GoldPrefab, plate.transform.position, Quaternion.identity);
                 eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
-                eventObj.transform.position += new Vector3(0, 0.5f, 0);
+                eventObj.transform.position += new Vector3(0, 0.1f, 0);
                 specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate,Random.Range(1, 5), SpecialEvent.SpecialEventType.Gold);
                 SpecialEvents.Add(specialEvent);
                 break;
             case "D":
                 eventObj = Instantiate(DiamondPrefab, plate.transform.position, Quaternion.identity);
                 eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
-                eventObj.transform.position += new Vector3(0, 0.5f, 0);
+                eventObj.transform.position += new Vector3(0, 0.1f, 0);
                 specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(1, 3), SpecialEvent.SpecialEventType.Diamond);
+                SpecialEvents.Add(specialEvent);
+                break;
+            case "R":
+                eventObj = Instantiate(RewindPrefab, plate.transform.position, Quaternion.identity);
+                eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
+                eventObj.transform.position += new Vector3(0, 0.1f, 0);
+                specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(1, 3), SpecialEvent.SpecialEventType.Rewinds);
                 SpecialEvents.Add(specialEvent);
                 break;
             default:
@@ -60,7 +67,6 @@ public class SpecialEventManager: MonoBehaviour
                 eventObj = Instantiate(GoldPrefab, plate.transform.position, Quaternion.identity);
                 specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(1, 5), SpecialEvent.SpecialEventType.Gold);
                 eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
-
                 SpecialEvents.Add(specialEvent);
           
                 break;
@@ -68,7 +74,6 @@ public class SpecialEventManager: MonoBehaviour
                 eventObj = Instantiate(DiamondPrefab, plate.transform.position, Quaternion.identity);
                 specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(1, 3), SpecialEvent.SpecialEventType.Diamond);
                 eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
-
                 SpecialEvents.Add(specialEvent);
                 break;
             case 2:

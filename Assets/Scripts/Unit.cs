@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour
     public bool isNpc;
     private float moveSpeed = 0.3f;
     private bool isActing;
-    public int AvaliableMovement  => TurnController.instance.GetActionCounterResults();
+    public int playersAvaliableSteps = 0;
     public void Init(string _playerID,string _playerName,Transform _modelTransform,bool _isNPC)
     {
         this.playerID = _playerID;
@@ -96,6 +96,7 @@ public class Unit : MonoBehaviour
         if (isActing) return;
         if (this == player)
         {
+            playersAvaliableSteps = DiceController.instance.DiceResult;
             BounceJump();
         }
 
@@ -150,6 +151,9 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
         s.OnComplete(() => {
+
+            playersAvaliableSteps = (isRewind) ? playersAvaliableSteps + 1 : playersAvaliableSteps - 1;
+            
             isActing = false;
             if (!isRewind) OnStepFinish(isRewind);
         });
@@ -217,32 +221,37 @@ public class Unit : MonoBehaviour
 
     #region PATHFINDING MOVEMENT
     //NPC MOVEMENT
-    public async void NpcMovePathFinding(Plate moveToPlate)
+    public async void NpcMovePathFinding()
     {
-        List<GridObject> path = LevelManager.instance.FindPath(this.GetPlayersGridObject().x, this.GetPlayersGridObject().y, moveToPlate.x, moveToPlate.y);
-        if (path == null)
-        {
-            Debug.Log($"Path is null");
-            return;
-        }
-        int avaliableSteps = (DiceController.instance.DiceResult+1 < path.Count)? DiceController.instance.DiceResult+1 : path.Count;
-        Debug.Log($"Avaliable Steps {avaliableSteps}");
+        while(this.playersAvaliableSteps > 0) {
 
-        for (int i = 0; i < avaliableSteps; i++)
-        {
-            if (i == 0) continue; //this is my position
-            Task movement;
-            path[i]?.GetPlate().ToggleColor(color: Color.yellow, false);
-            int fromX = this.GetPlayersGridObject().GetPlate().x;
-            int fromY = this.GetPlayersGridObject().GetPlate().y;
-            int toX = path[i].GetPlate().x;
-            int toY = path[i].GetPlate().y;
-            movement = Move(GetDirectionToMove(fromX, fromY, toX, toY), false).AsyncWaitForCompletion();
+
+            List<GridObject> path =  TurnController.instance.GetNearestEventPath(this);
+
+            if (path.Count==0)
+            {
+                Debug.Log($"Path is null");
+                break;
+            }
+
+            int avaliableSteps = (TurnController.instance.GetAvaliableSteps() + 1 < path.Count)? TurnController.instance.GetAvaliableSteps() + 1 : path.Count;
+            Debug.Log($"Avaliable Steps {avaliableSteps-1}");
+
+            for (int i = 0; i < avaliableSteps; i++)
+            {
+                if (i == 0) continue; //this is my position
+                Task movement;
+                path[i]?.GetPlate().ToggleColor(color: Color.yellow, false);
+                int fromX = this.GetPlayersGridObject().GetPlate().x;
+                int fromY = this.GetPlayersGridObject().GetPlate().y;
+                int toX = path[i].GetPlate().x;
+                int toY = path[i].GetPlate().y;
+                movement = Move(GetDirectionToMove(fromX, fromY, toX, toY), false).AsyncWaitForCompletion();
            
-            await movement;
+                await movement;
 
+            }
         }
-
 
         await Task.Delay(2000);
         TurnController.instance.ChangeTurn();
@@ -278,6 +287,7 @@ public class Unit : MonoBehaviour
         Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}  direction: {direction}");
         return direction;
     }
+   
     #endregion
 
     private void OnEnable()

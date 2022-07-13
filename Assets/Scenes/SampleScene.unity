@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4439403, g: 0.4931519, b: 0.5722083, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2695,6 +2695,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GoldPrefab: {fileID: 4072499190800578504, guid: 53004bf8c28947e45855e4cf0d1882b7, type: 3}
   DiamondPrefab: {fileID: 9036886098014699325, guid: 9b735082d246895409c014a3e2cf0508, type: 3}
+  RewindPrefab: {fileID: 1181205349722153802, guid: bd30f8fa6f0a748a0be4af5a07654f97, type: 3}
   SpecialEvents: []
 --- !u!1 &523157615818022264
 GameObject:
