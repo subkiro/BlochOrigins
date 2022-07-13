@@ -620,7 +620,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7157755791031738495, guid: cf8f62adb6004f147b3be16c722dc98e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -33.58136
+      value: -33.5813
       objectReference: {fileID: 0}
     - target: {fileID: 7157755791031738495, guid: cf8f62adb6004f147b3be16c722dc98e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1199,7 +1199,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &748588294
 MeshCollider:
   m_ObjectHideFlags: 0
