@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2674233186292783014}
   m_Layer: 7
-  m_Name: P1
+  m_Name: P2
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -87,6 +87,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 2bd85b0f14c2a4f69b74bae155d1a21b, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 3507567b1262d4369a3afa1e70fa0a67, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4b53a2d015a614dfdbe8448806eb7ece, type: 2}
     - target: {fileID: 919132149155446097, guid: 3507567b1262d4369a3afa1e70fa0a67, type: 3}
       propertyPath: m_Name
       value: PlayerModel
