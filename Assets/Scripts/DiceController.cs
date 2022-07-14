@@ -37,34 +37,50 @@ public class DiceController : MonoBehaviour
       
     }
 
-
+    
     public void ThrowDiceNpc(Unit player,UnityAction _OnComplete) {
+        UnityAction dice;
+        if (player.SpecialDiceCounter == 0 && Random.Range(0, 100) < 50)
+        {
+            dice = () => AnimateDice(player, isDiceSpecial: true, _OnComplete);
+        }
+        else {
+
+            dice = () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
+
+        }
+        UnityAction DiceSpecial = player.SpecialDiceCounter==0 && Random.Range(0,100)<50?() => AnimateDice(player, isDiceSpecial: true, _OnComplete): () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
         AnimateDice(player, isDiceSpecial: false, _OnComplete);
     }
     public void ThrowDicePlayer(Unit player, UnityAction _OnComplete)
     {
+
+        UnityAction DiceSpecial = player.SpecialDiceCounter == 0 ? () => AnimateDice(player, isDiceSpecial: true, _OnComplete) : null;
+        UnityAction DiceNormal = () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
         MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo,FadeMoveY_Start:500,FadeMoveY_End: 200, withBlur: false);
-        message.SetData("Select Dice", "Choose the dice you want to throw", () => AnimateDice(player, isDiceSpecial: true, _OnComplete), () => AnimateDice(player,isDiceSpecial: false, _OnComplete), NoButtonText: "Normal",YesButtonText: "Special");
+        message.SetData("Select Dice", "Choose the dice you want to throw", DiceSpecial, DiceNormal, NoButtonText: "Normal",YesButtonText: "Special");
 
 
     }
     public Sequence AnimateDice(Unit player,bool isDiceSpecial, UnityAction _OnComplete) {
-        
+
+        if (isDiceSpecial) player.ResetSpecialDice();
         StateManager.instance.SetState(StateManager.State.Dice);
         Transform dice = (isDiceSpecial) ? diceSpecial.transform : diceNormal.transform;
 
        
         
         Sequence s = DOTween.Sequence();
-
+      
         s.Join(DiceNumber.DOScale(0, 0));
         s.Join(dice.transform.DOScale(Vector3.one, .3f));
-        s.Join(dice.transform.DOShakeRotation(3, 90, 10, 90,false));
+        s.Join(dice.transform.DOShakeRotation(1, 90, 10, 90,false));
         s.Append(dice.transform.DORotate(OpenDice(isDiceSpecial), 1).SetEase(Ease.OutBack));
         s.AppendInterval(.5f);
         s.Append(dice.transform.DOScale(Vector3.zero, 0.3f));
         s.Append(DiceNumber.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack));
-        s.OnComplete(()=>_OnComplete?.Invoke());
+       
+        s.OnComplete(() => _OnComplete?.Invoke());
 
         return s;
     }

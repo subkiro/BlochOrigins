@@ -15,6 +15,7 @@ public class Unit : MonoBehaviour
     private float moveSpeed = 0.3f;
     private bool isActing;
     public int playersAvaliableSteps = 0;
+    public int SpecialDiceCounter = 2;
     public void Init(string _playerID,string _playerName,Transform _modelTransform,bool _isNPC)
     {
         this.playerID = _playerID;
@@ -52,6 +53,12 @@ public class Unit : MonoBehaviour
 
         }
     }
+
+    internal void ResetSpecialDice()
+    {
+        SpecialDiceCounter = 2;
+    }
+
     public GridObject GetPlayersGridObject()
     {
         return LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
@@ -70,6 +77,16 @@ public class Unit : MonoBehaviour
         GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)finalPosition.x, (int)finalPosition.z);
 
         if (gridObject == null) { return false; }
+
+        if (this.isNpc)
+        {
+
+            if (this.transform.localPosition + movePosTarget == TurnController.instance.PlayerUnit.transform.localPosition && playersAvaliableSteps == 1) return false;
+        }
+        else {
+            if (this.transform.localPosition + movePosTarget == TurnController.instance.NpcUnit.transform.localPosition && TurnController.instance.GetAvaliableSteps() == 1) return false;
+        }
+       
 
 
         switch (gridObject.GetPlate().floorType)
@@ -97,7 +114,8 @@ public class Unit : MonoBehaviour
         if (this == player)
         {
             playersAvaliableSteps = DiceController.instance.DiceResult;
-            BounceJump();
+            SpecialDiceCounter = (SpecialDiceCounter <= 0) ? 0 : SpecialDiceCounter - 1;
+            //BounceJump();
         }
 
     }

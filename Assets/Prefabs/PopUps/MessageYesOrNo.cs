@@ -36,10 +36,11 @@ public class MessageYesOrNo : PopUp
 
         if (ExitButton != null)
         {
-            ExitButton.gameObject.SetActive(true);
 
             if (OnNO != null)
             {
+                ExitButton.gameObject.SetActive(true);
+
                 ExitButton.onClick.AddListener(() =>
                 {
                     OnNO?.Invoke();
@@ -48,10 +49,8 @@ public class MessageYesOrNo : PopUp
             }
             else
             {
-                ExitButton.onClick.AddListener(() =>
-                {
-                    OnComplete?.Invoke();
-                });
+                ExitButton.gameObject.SetActive(false);
+
             }
         }
 
@@ -62,6 +61,7 @@ public class MessageYesOrNo : PopUp
 
             if (OnNO != null)
             {
+
                 OverlayButton.onClick.AddListener(() =>
                 {
                     OnNO?.Invoke();
@@ -78,10 +78,11 @@ public class MessageYesOrNo : PopUp
 
         if (NegativeButton != null)
         {
-            NegativeButton.gameObject.SetActive(true);
 
             if (OnNO != null)
             {
+                NegativeButton.gameObject.SetActive(true);
+
                 NegativeButton.onClick.AddListener(() =>
                 {
                     OnNO?.Invoke();
@@ -90,20 +91,19 @@ public class MessageYesOrNo : PopUp
             }
             else
             {
-                NegativeButton.onClick.AddListener(() =>
-                {
-                    OnComplete?.Invoke();
-                });
+                NegativeButton.gameObject.SetActive(false);
+
             }
         }
 
 
         if (PositiveButton != null)
         {
-            PositiveButton.gameObject.SetActive(true);
 
             if (OnYes != null)
             {
+                PositiveButton.gameObject.SetActive(true);
+
                 PositiveButton.onClick.AddListener(() =>
                 {
                     OnYes?.Invoke();
@@ -112,10 +112,8 @@ public class MessageYesOrNo : PopUp
             }
             else
             {
-                PositiveButton.onClick.AddListener(() =>
-                {
-                    OnComplete?.Invoke();
-                });
+                PositiveButton.gameObject.SetActive(false);
+
             }
         }
     }

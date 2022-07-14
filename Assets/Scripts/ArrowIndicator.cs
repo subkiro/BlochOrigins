@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class ArrowIndicator : MonoBehaviour
 {
@@ -9,11 +10,14 @@ public class ArrowIndicator : MonoBehaviour
     public GameObject ArrowModel;
     Vector3 mouseWorldPos,moveVelocity;
     Vector3 rotation;
+    public Button FinishTurnButton;
 
     public Tools.Directions LookDirection;
     private void Awake()
     {
         instance = this;
+
+        
     }
 
 
@@ -90,13 +94,37 @@ public class ArrowIndicator : MonoBehaviour
         }
     }
 
+    public void OnStepExecuted(int stepCounter) {
+        if (!TurnController.instance.GetCurrentUnit().isNpc) {
+
+            Debug.Log(TurnController.instance.GetCurrentUnit().playersAvaliableSteps);
+            if (TurnController.instance.GetAvaliableSteps() == 0)
+            {
+                this.transform.DOScale(0, .5f);
+
+            }
+            else {
+                this.transform.DOScale(1, .5f).SetEase(Ease.OutBack);
+            }
+        }
+    }
+
+
+
+  
+
+
+
     private void OnEnable()
     {
         StateManager.OnStateChanged += OnStateChange;
+        TurnController.OnStepExecuted += OnStepExecuted;
     }
 
     private void OnDisable()
     {
         StateManager.OnStateChanged -= OnStateChange;
+        TurnController.OnStepExecuted -= OnStepExecuted;
+
     }
 }

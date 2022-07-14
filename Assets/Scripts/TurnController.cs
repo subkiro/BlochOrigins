@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 public class TurnController : MonoBehaviour
 {
 
@@ -15,6 +15,7 @@ public class TurnController : MonoBehaviour
     public static UnityAction<Unit> OnTurnChanged;
     public static UnityAction<int> OnStepExecuted;
 
+
     private Unit m_currentTurnUnit;
     public int DiceResult;
     private void Awake()
@@ -22,7 +23,12 @@ public class TurnController : MonoBehaviour
         instance = this;
         _actionRecorder = new ActionRecorder();
         Instantiate(ArrowControler);
+
+       
     }
+
+
+    
 
     public void StartTurn(Unit player) {
 
