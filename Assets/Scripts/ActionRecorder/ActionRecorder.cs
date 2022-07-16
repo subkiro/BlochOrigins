@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ActionRecorder : MonoBehaviour
+public class ActionRecorder
 {
     public readonly Stack<ActionBase> _actions = new Stack<ActionBase>();
     public void Record(ActionBase action) {

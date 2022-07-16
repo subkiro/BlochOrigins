@@ -29,3 +29,7 @@ MonoBehaviour:
   AllPlayerModels:
   - {fileID: 11400000, guid: 13ee8605f531d4f2fba8fea05d4f44d9, type: 2}
   - {fileID: 11400000, guid: 4a64517f1e6a84906baad0ea6d70c3b7, type: 2}
+  - {fileID: 11400000, guid: cbfe523b8931548c6b712511a9689dcb, type: 2}
+  - {fileID: 11400000, guid: 78fb685a98609460c99f87086f3940ee, type: 2}
+  - {fileID: 11400000, guid: 8fa95ba3e0a7f46c58d849224a2cb20d, type: 2}
+  - {fileID: 11400000, guid: e512dc4aaf2ad43219c1e69051e2f010, type: 2}

@@ -50,7 +50,7 @@ public class SpecialEventManager: MonoBehaviour
                 eventObj = Instantiate(RewindPrefab, plate.transform.position, Quaternion.identity);
                 eventObj.transform.SetParent(LevelManager.instance.FloorContainer);
                 eventObj.transform.position += new Vector3(0, 0.1f, 0);
-                specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(1, 3), SpecialEvent.SpecialEventType.Rewinds);
+                specialEvent = eventObj.GetComponent<SpecialEvent>().Init(plate, Random.Range(3, 6), SpecialEvent.SpecialEventType.Rewinds);
                 SpecialEvents.Add(specialEvent);
                 break;
             default:

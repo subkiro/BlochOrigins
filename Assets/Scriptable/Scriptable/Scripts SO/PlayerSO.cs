@@ -19,7 +19,6 @@ public class PlayerSO : ScriptableObject
         GameObject model = Instantiate(modelPrefab, unitContainer.transform);
 
         Unit playerUnit = unitContainer.GetComponent<Unit>();
-
         model.transform.localScale = new Vector3(1, Random.Range(0.7f, 1f), 1);
         playerUnit.Init(this.PlayerID, this.PlayerName, model.transform,isNpc);
 

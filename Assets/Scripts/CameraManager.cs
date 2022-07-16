@@ -39,7 +39,9 @@ public class CameraManager : MonoBehaviour
                 GamePlay_Normal.LookAt = TurnController.instance.GetCurrentUnit().transform;
            
                 break;
+            case StateManager.State.Menu:
 
+                break;
         }
 
 

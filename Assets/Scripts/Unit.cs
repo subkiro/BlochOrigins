@@ -48,6 +48,7 @@ public class Unit : MonoBehaviour
             case Tools.FloorType.START:
                 gridObject.GetPlate().ToggleColor(Color.red, isRewind);
                 SpecialEventManager.instance.ClaimSpecialEvent(this, gridObject.GetPlate());
+                if (!CanPlayerMoveAllDirections()) TurnController.instance.ChangeTurn();
                 break;
 
 
@@ -62,6 +63,18 @@ public class Unit : MonoBehaviour
     public GridObject GetPlayersGridObject()
     {
         return LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
+    }
+
+    public bool CanPlayerMoveAllDirections() {
+
+        if (CanPlayerMove(Tools.Directions.FORWORD) || CanPlayerMove(Tools.Directions.BACK) || CanPlayerMove(Tools.Directions.LEFT) || CanPlayerMove(Tools.Directions.RIGHT))
+        {
+            return true;
+        }
+        else {
+            return false;
+           
+        }
     }
     public bool CanPlayerMove(Tools.Directions direction)
     {
@@ -126,6 +139,8 @@ public class Unit : MonoBehaviour
 
     public Sequence Move(Tools.Directions direction, bool isRewind)
     {
+
+       
         if (isActing)
         {
             DOTween.Kill(this, true);
@@ -158,7 +173,17 @@ public class Unit : MonoBehaviour
 
 
 
-        if (isRewind) OnStepFinish(isRewind);
+        if (isRewind) {
+            OnStepFinish(isRewind);
+            if (isNpc)
+            {
+                GameManager.instance.playerInfoNpc.Rewinds = -1;
+            }
+            else {
+
+                GameManager.instance.playerInfo.Rewinds = -1;
+            }
+        }
 
         Sequence s = DOTween.Sequence();
 
@@ -173,7 +198,10 @@ public class Unit : MonoBehaviour
             playersAvaliableSteps = (isRewind) ? playersAvaliableSteps + 1 : playersAvaliableSteps - 1;
             
             isActing = false;
-            if (!isRewind) OnStepFinish(isRewind);
+            if (!isRewind) {
+                OnStepFinish(isRewind);
+
+            }
         });
         return s;
     }

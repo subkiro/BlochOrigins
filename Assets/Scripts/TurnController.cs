@@ -118,9 +118,11 @@ public class TurnController : MonoBehaviour
   
     }
     public void Rewind() {
-       
 
-      
+        int rewindsAvaliable = (m_currentTurnUnit.isNpc) ? GameManager.instance.playerInfoNpc.Rewinds: GameManager.instance.playerInfo.Rewinds;
+        if (rewindsAvaliable <= 0) return;
+
+
             _actionRecorder.Rewind();
             OnStepExecuted?.Invoke(GetActionCounterResults());
         

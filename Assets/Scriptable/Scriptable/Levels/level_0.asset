@@ -16,17 +16,17 @@ MonoBehaviour:
   isCompleted: 0
   level: 'EEXXXXXXXEE
 
-    EEX__R_NXEE
+    EEXS_R_NXEE
 
     EEX_____XEE
 
     EXXXX_XXXXE
 
-    X__G__R___X
+    X__G__R__GX
 
-    X_______G_X
+    X_R____GG_X
 
-    X__GXXD___X
+    X__GXXDG__X
 
     X___GXXD__X
 
@@ -34,8 +34,8 @@ MonoBehaviour:
 
     X___E_____X
 
-    X_D_____G_X
+    X_D_G___G_X
 
-    X____E__SFX
+    X__D___R__X
 
     XXXXXXXXXXX'

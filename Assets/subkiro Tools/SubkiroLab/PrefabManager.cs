@@ -10,6 +10,8 @@ public class PrefabManager: MonoBehaviour
         Instance = this;
     }
     #region PopUps
-    public GameObject MessageYESorNo;
+    public GameObject MessageDice;
+    public GameObject MessageMainMenu;
+
     #endregion
 }

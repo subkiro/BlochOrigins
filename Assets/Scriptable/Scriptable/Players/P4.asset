@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94103d083afcb4f4ea0da42000b6de88, type: 3}
-  m_Name: P1
+  m_Name: P4
   m_EditorClassIdentifier: 
-  PlayerID: P1
-  PlayerName: Alex
-  modelPrefab: {fileID: 2674233186292783008, guid: f5146a04515034cea94eec1294e7b79c, type: 3}
+  PlayerID: P4
+  PlayerName: George
+  modelPrefab: {fileID: 2674233186292783008, guid: 8f766c2d681214d38a03d9e55f228c89, type: 3}
   UnitContainerPrefab: {fileID: 8617886081768338615, guid: 3b061e7c23edd4667b22cbd9e1d1dba2, type: 3}

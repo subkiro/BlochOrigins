@@ -40,7 +40,7 @@ public class DiceController : MonoBehaviour
     
     public void ThrowDiceNpc(Unit player,UnityAction _OnComplete) {
         UnityAction dice;
-        if (player.SpecialDiceCounter == 0 && Random.Range(0, 100) < 50)
+        if (player.SpecialDiceCounter == 0 && Random.Range(0, 100) < 90)
         {
             dice = () => AnimateDice(player, isDiceSpecial: true, _OnComplete);
         }
@@ -57,7 +57,7 @@ public class DiceController : MonoBehaviour
 
         UnityAction DiceSpecial = player.SpecialDiceCounter == 0 ? () => AnimateDice(player, isDiceSpecial: true, _OnComplete) : null;
         UnityAction DiceNormal = () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
-        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo,FadeMoveY_Start:500,FadeMoveY_End: 200, withBlur: false);
+        MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageDice,FadeMoveY_Start:500,FadeMoveY_End: 200, withBlur: false);
         message.SetData("Select Dice", "Choose the dice you want to throw", DiceSpecial, DiceNormal, NoButtonText: "Normal",YesButtonText: "Special");
 
 

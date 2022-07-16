@@ -25,7 +25,7 @@ public class PlayerInfoPanel : MonoBehaviour
     }
     public int Rewinds
     {
-        set { m_rewinds += value; RewindText.text = m_rewinds.ToString(); }
+        set { m_rewinds += value; if (value <= 0) m_rewinds = 0; RewindText.text = m_rewinds.ToString(); }
         get { return m_rewinds; }
     }
 
