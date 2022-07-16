@@ -58,8 +58,14 @@ public class GameManager : MonoBehaviour
         player.SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(player));
 
         //SetupInfoPanel
-        if (isNPC) { playerInfoNpc.SetupInfoPanel(player); }
-        else { playerInfo.SetupInfoPanel(player); }
+        if (isNPC) {
+            playerInfoNpc.SetupInfoPanel(player);
+        }
+        else {
+            playerInfo.SetupInfoPanel(player);
+            ArrowIndicator.instance.Init(player);
+
+        }
 
         return player;
     }
