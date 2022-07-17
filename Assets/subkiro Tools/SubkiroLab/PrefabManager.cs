@@ -12,6 +12,7 @@ public class PrefabManager: MonoBehaviour
     #region PopUps
     public GameObject MessageDice;
     public GameObject MessageMainMenu;
+    public GameObject MessageGameEnd;
 
     #endregion
 }

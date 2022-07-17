@@ -81,7 +81,7 @@ public class SpecialEventManager: MonoBehaviour
                 break;
         }
     }
-    public void ClaimSpecialEvent(Unit player,Plate plate) {
+    public bool ClaimSpecialEvent(Unit player,Plate plate) {
 
         SpecialEvent sp_event = null;
 
@@ -99,6 +99,15 @@ public class SpecialEventManager: MonoBehaviour
             
         }
 
+
+        if (SpecialEvents.Count == 0)
+        {
+
+            return true;
+        }
+
+
+        return false;
     }
 
 }

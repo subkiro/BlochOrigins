@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using System.Threading.Tasks;
 using System;
 
 public  class LevelManager : MonoBehaviour
@@ -26,6 +27,7 @@ public  class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     public void GenerateLevel(LevelSO level,List<FloorPlateSO> AllPlates)
     {
+        ClearLevelContainer();
         m_CurrentLevel = level;
         m_AllPlates = AllPlates;
 
@@ -33,6 +35,16 @@ public  class LevelManager : MonoBehaviour
         grid = FillGrid(grid, level);
         AnimateGirid(grid);
 
+    }
+
+    public  void ClearLevelContainer() {
+
+        for (int i = 0; i < FloorContainer.childCount; i++)
+        {
+             Destroy(FloorContainer.GetChild(i).gameObject);         
+        }
+
+        
     }
 
 
@@ -136,7 +148,7 @@ public  class LevelManager : MonoBehaviour
         startNode.hCost = CalculateDistanceCost(startNode, endNode);
         startNode.CalculateFCost();
 
-
+        int counter = 0;
         while (OpenList.Count > 0) {
             GridObject currenNode = GetLowestFCostNode(OpenList);
             if (currenNode == endNode) {
@@ -147,7 +159,6 @@ public  class LevelManager : MonoBehaviour
 
             OpenList.Remove(currenNode);
             CloseList.Add(currenNode);
-
             foreach (var neighbourNode in GetNeighboursList(currenNode))
             {
                 if (CloseList.Contains(neighbourNode)) continue;
@@ -161,7 +172,12 @@ public  class LevelManager : MonoBehaviour
                         CloseList.Add(neighbourNode); 
                         continue;
                 }
- 
+               
+                if (neighbourNode.GetPlate().transform.localPosition==TurnController.instance.PlayerUnit.transform.localPosition && counter==DiceController.instance.DiceResult) {
+                    CloseList.Add(neighbourNode);
+                    continue;
+                }
+
                 int tentativeGCost = currenNode.gCost + CalculateDistanceCost(neighbourNode, endNode);
                 if (tentativeGCost < neighbourNode.gCost) {
                     neighbourNode.cameFrom = currenNode;
@@ -171,6 +187,8 @@ public  class LevelManager : MonoBehaviour
 
                     if (!OpenList.Contains(neighbourNode)) {
                         OpenList.Add(neighbourNode);
+                        counter++;
+
                     }
                 }
             }

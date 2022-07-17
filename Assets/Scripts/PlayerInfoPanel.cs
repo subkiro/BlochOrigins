@@ -13,19 +13,20 @@ public class PlayerInfoPanel : MonoBehaviour
     public Image GoldIcon, DiamondIcon,RewindsIcon;
     private int m_diamonds,m_golds,m_rewinds;
     private string m_Name;
+    public Image HilightOutline;
 
     public int Diamonds {
-        set { m_diamonds += value; DiamondText.text = m_diamonds.ToString(); }
+        set { m_diamonds = value; DiamondText.text = m_diamonds.ToString(); }
         get { return m_diamonds; }
     }
     public int Golds
     {
-        set { m_golds += value; GoldText.text = m_golds.ToString(); }
+        set { m_golds = value; GoldText.text = m_golds.ToString(); }
         get { return m_golds; }
     }
     public int Rewinds
     {
-        set { m_rewinds += value; if (m_rewinds <= 0) m_rewinds = 0; RewindText.text = m_rewinds.ToString(); }
+        set { m_rewinds = value; if (m_rewinds <= 0) m_rewinds = 0; RewindText.text = m_rewinds.ToString(); }
         get { return m_rewinds; }
     }
 
@@ -36,7 +37,7 @@ public class PlayerInfoPanel : MonoBehaviour
     }
     public void SetupInfoPanel(Unit player) {
         Player = player;
-        Name = player.isNpc ? "Npc player" : "You";
+        Name = player.isNpc ? player.playerName : "(You) "+player.playerName;
         Golds = 0;
         Golds = Diamonds = Rewinds = 0;
 
@@ -49,15 +50,15 @@ public class PlayerInfoPanel : MonoBehaviour
         {
 
             case SpecialEvent.SpecialEventType.Gold:
-                Golds = specialEvent.Amount;
+                Golds += specialEvent.Amount;
                 GoldIcon.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 1, 0);
                 break;
             case SpecialEvent.SpecialEventType.Diamond:
-                Diamonds = specialEvent.Amount;
+                Diamonds += specialEvent.Amount;
                 DiamondIcon.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 1, 0);
                 break;
             case SpecialEvent.SpecialEventType.Rewinds:
-                Rewinds = specialEvent.Amount;
+                Rewinds += specialEvent.Amount;
                 RewindsIcon.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 1, 0);
                 break;
 
@@ -73,5 +74,15 @@ public class PlayerInfoPanel : MonoBehaviour
     private void OnDisable()
     {
         SpecialEventManager.OnEventClaimed -= GetUpdateStats;
+    }
+
+
+    public void Init(PlayerInfoPanel infoPanel) {
+
+        Player = infoPanel.Player;
+        Name = infoPanel.Player.playerName;
+        Golds = infoPanel.Golds;
+        Diamonds = infoPanel.Diamonds;
+        Rewinds = infoPanel.Rewinds;
     }
 }

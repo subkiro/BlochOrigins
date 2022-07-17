@@ -30,6 +30,7 @@ public class ArrowIndicator : MonoBehaviour
     private void LateUpdate()
     {
 
+
         LookAtMouse();
     }
 
@@ -79,32 +80,39 @@ public class ArrowIndicator : MonoBehaviour
 
 
     public void OnStateChange(StateManager.State state) {
+
         switch (state)
         {
             case StateManager.State.PlayerRound:
                 this.transform.localPosition = Vector3.zero;
-                this.transform.DOScale(1, 0.5f).SetEase(Ease.OutBack).OnStart(() => { ArrowModel.gameObject.SetActive(true); });
+                this.transform.DOScale(1, 0.5f).SetId(this).SetEase(Ease.OutBack).OnStart(() => { ArrowModel.gameObject.SetActive(true); });
                 break;
             case StateManager.State.NpcRound:
-                this.transform.DOScale(0, 0).OnComplete(() => { ArrowModel.gameObject.SetActive(false); });                
+                this.transform.DOScale(0, 0).SetId(this).OnComplete(() => { ArrowModel.gameObject.SetActive(false); });                
                 break;
             default:
-                this.transform.DOScale(0, 0.3f).SetEase(Ease.OutBack);
+                this.transform.DOScale(0, 0.3f).SetId(this).SetEase(Ease.OutBack);
                 break;
         }
     }
 
     public void OnStepExecuted(int stepCounter) {
+
+        if (TurnController.instance.GetCurrentUnit() == null) {
+            this.transform.DOScale(0, 0f).SetId(this);
+            return;
+        }
+        
         if (!TurnController.instance.GetCurrentUnit().isNpc) {
 
             Debug.Log(TurnController.instance.GetCurrentUnit().playersAvaliableSteps);
             if (TurnController.instance.GetAvaliableSteps() == 0)
             {
-                this.transform.DOScale(0, .5f);
+                this.transform.DOScale(0, .5f).SetId(this);
 
             }
             else {
-                this.transform.DOScale(1, .5f).SetEase(Ease.OutBack);
+                this.transform.DOScale(1, .5f).SetId(this).SetEase(Ease.OutBack);
             }
         }
     }
@@ -126,5 +134,10 @@ public class ArrowIndicator : MonoBehaviour
         StateManager.OnStateChanged -= OnStateChange;
         TurnController.OnStepExecuted -= OnStepExecuted;
 
+    }
+
+    private void OnDestroy()
+    {
+        DOTween.Kill(this);
     }
 }

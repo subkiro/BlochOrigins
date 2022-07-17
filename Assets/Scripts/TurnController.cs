@@ -10,7 +10,6 @@ public class TurnController : MonoBehaviour
 
     [SerializeField] public Unit PlayerUnit;
     [SerializeField] public Unit NpcUnit;
-    [SerializeField] GameObject ArrowControler;
      private ActionRecorder _actionRecorder ;
     public static UnityAction<Unit> OnTurnChanged;
     public static UnityAction<int> OnStepExecuted;
@@ -22,7 +21,6 @@ public class TurnController : MonoBehaviour
     {
         instance = this;
         _actionRecorder = new ActionRecorder();
-        Instantiate(ArrowControler);
 
        
     }
@@ -113,7 +111,6 @@ public class TurnController : MonoBehaviour
            
             var action = new MoveAction(m_currentTurnUnit, direction);
             _actionRecorder.Record(action);
-            OnStepExecuted?.Invoke(GetActionCounterResults());
         }
   
     }
@@ -128,20 +125,32 @@ public class TurnController : MonoBehaviour
         
     }
     public int GetActionCounterResults() {
-
        return (_actionRecorder.GetCount());
     }
 
 
+    public void OnGameEnded(StateManager.State state) {
+        switch (state)
+        {
+            case StateManager.State.GameEnded:
+                Destroy(PlayerUnit.gameObject);
+                Destroy(NpcUnit.gameObject);
+                break;
+            
+        }
 
+    }
 
 
     private void OnEnable()
     {
         InputManager.OnMove += OnMove;
+        StateManager.OnStateChanged += OnGameEnded;
     }
     private void OnDisable()
     {
         InputManager.OnMove -= OnMove;
+        StateManager.OnStateChanged -= OnGameEnded;
+
     }
 }

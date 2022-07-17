@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Threading.Tasks;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class GameManager : MonoBehaviour
     public  bool useDebug = false;
     public Transform Base;
     public CanvasGroup InGamePanelUI;
+    [SerializeField] GameObject ArrowControler;
+
+    public static UnityAction<Unit> OnPlayerSelected;
 
     private int SelectedPlayerIndex;
     private Unit SelectedPlayer;
@@ -28,13 +32,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // SetupGame();
-        StateManager.instance.SetState(StateManager.State.Menu);
+       
         SetUpBase();
     }
 
     // Update is called once per frame
     private void SetupGame()
     {
+        StateManager.instance.SetState(StateManager.State.GameStarted);
+       if(SelectedPlayer!=null)  Destroy(SelectedPlayer);
         InGamePanelUI.DOFade(1, .5f).SetDelay(2);
         InitLevel(0);
         SpecialEventManager.instance.InitEvents(LevelManager.instance.grid);
@@ -46,6 +52,7 @@ public class GameManager : MonoBehaviour
 
 
     void InitLevel(int level) {
+
         LevelManager.instance.GenerateLevel(listOfObjects.AllLevels[level], listOfObjects.AllPlates);
     }
 
@@ -63,6 +70,7 @@ public class GameManager : MonoBehaviour
         }
         else {
             playerInfo.SetupInfoPanel(player);
+            Instantiate(ArrowControler);
             ArrowIndicator.instance.Init(player);
 
         }
@@ -80,7 +88,7 @@ public class GameManager : MonoBehaviour
 
 
     public void SetUpBase() {
-
+        StateManager.instance.SetState(StateManager.State.Menu);
         ShowPlayer(0);
         InGamePanelUI.DOFade(0, .5f);
         MessageMainMenu message = PopUpManager.instance.Show<MessageMainMenu>(PrefabManager.Instance.MessageMainMenu, withBlur: false);
@@ -102,10 +110,21 @@ public class GameManager : MonoBehaviour
         ShowPlayer(SelectedPlayerIndex);
     }
     public void SelectStartGame() {
-
-        Destroy(SelectedPlayer);
+        Destroy(SelectedPlayer.gameObject);
         SetupGame();
     }
+    public void GameEnded() {
+
+
+
+        MessageMatchEnd message = PopUpManager.instance.Show<MessageMatchEnd>(PrefabManager.Instance.MessageGameEnd, withBlur: false);
+        message.SetData(SetUpBase);
+
+
+    }
+
+
+    
 
     bool isShowing = false;
     public async void ShowPlayer(int playerIndex) {
@@ -134,7 +153,7 @@ public class GameManager : MonoBehaviour
         await task2;
 
         isShowing = false;
-        
+        OnPlayerSelected?.Invoke(SelectedPlayer);
     }
 
 
@@ -148,9 +167,12 @@ public class GameManager : MonoBehaviour
             case StateManager.State.PlayerRound:
             case StateManager.State.NpcRound:
             case StateManager.State.GameStarted:
-            case StateManager.State.GameEnded:
             case StateManager.State.Dice:
                 InGamePanelUI.DOFade(1, 1);
+                break;
+            case StateManager.State.GameEnded:
+                InGamePanelUI.DOFade(0, 0);
+                GameEnded();
                 break;
         }
     }

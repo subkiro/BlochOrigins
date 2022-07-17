@@ -32,7 +32,7 @@ public class CameraManager : MonoBehaviour
                 SetCameraState(CameraStates.GamePlay_Npc);
                 break;           
                  case StateManager.State.GameStarted:
-                SetCameraState(CameraStates.TopDown);
+                 SetCameraState(CameraStates.TopDown);
             break;
             case StateManager.State.Dice:
                 GamePlay_Normal.Follow = TurnController.instance.GetCurrentUnit().transform;
@@ -53,17 +53,17 @@ public class CameraManager : MonoBehaviour
         switch (state)
         {
             case CameraStates.GamePlay_Normal:
-                GamePlay_Normal.Follow = TurnController.instance.PlayerUnit.transform;
+                if(TurnController.instance.PlayerUnit!=null)GamePlay_Normal.Follow = TurnController.instance.PlayerUnit.transform;
                 //GamePlay_Normal.LookAt = TurnController.instance.PlayerUnit.transform;
                 CameraStateAnimator.SetTrigger(state.ToString());
                 break;
             case CameraStates.GamePlay_Npc:
-                GamePlay_Npc.Follow = TurnController.instance.NpcUnit.transform;
+                if (TurnController.instance.NpcUnit != null) GamePlay_Npc.Follow = TurnController.instance.NpcUnit.transform;
              //   GamePlay_Npc.LookAt = TurnController.instance.NpcUnit.transform;
                 CameraStateAnimator.SetTrigger(state.ToString());
                 break;
             case CameraStates.TopDown:
-                TopDown.Follow = TurnController.instance.GetCurrentUnit().transform;
+               // TopDown.Follow = TurnController.instance.GetCurrentUnit().transform;
                // TopDown.LookAt = TurnController.instance.GetCurrentUnit().transform;
                 break;
           

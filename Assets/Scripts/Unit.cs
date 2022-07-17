@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Threading.Tasks;
+using UnityEngine.Events;
 
 public class Unit : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class Unit : MonoBehaviour
     #region PUBLIC FUNCTIONS
     public void OnStepFinish(bool isRewind)
     {
+        TurnController.OnStepExecuted?.Invoke(playersAvaliableSteps);
 
         GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
         if (gridObject == null) { FallInSpace(); return; }
@@ -39,7 +41,7 @@ public class Unit : MonoBehaviour
         {
 
             case Tools.FloorType.FINISH:
-                Finish();
+                Finish(()=>StateManager.instance.SetState(StateManager.State.GameEnded));
                 break;
             case Tools.FloorType.EMPTY:
                 FallInSpace();
@@ -47,8 +49,22 @@ public class Unit : MonoBehaviour
             case Tools.FloorType.WALKABLE:
             case Tools.FloorType.START:
                 gridObject.GetPlate().ToggleColor(Color.red, isRewind);
-                SpecialEventManager.instance.ClaimSpecialEvent(this, gridObject.GetPlate());
+                bool NoMoreEvents = SpecialEventManager.instance.ClaimSpecialEvent(this, gridObject.GetPlate());
+                if (NoMoreEvents) {
+                    if (this.isNpc)
+                    {
+                        StateManager.instance.SetState(StateManager.State.GameEnded);
+                        Finish(() => { });
+                    }
+                    else {
+                        Finish(()=>StateManager.instance.SetState(StateManager.State.GameEnded));
+                    }
+                    
+                    break;
+                }
                 if (!CanPlayerMoveAllDirections()) TurnController.instance.ChangeTurn();
+
+
                 break;
 
 
@@ -177,11 +193,11 @@ public class Unit : MonoBehaviour
             OnStepFinish(isRewind);
             if (isNpc)
             {
-                GameManager.instance.playerInfoNpc.Rewinds = -1;
+                GameManager.instance.playerInfoNpc.Rewinds += -1;
             }
             else {
 
-                GameManager.instance.playerInfo.Rewinds = -1;
+                GameManager.instance.playerInfo.Rewinds += -1;
             }
         }
 
@@ -193,7 +209,7 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
-        s.OnComplete(() => {
+        s.AppendCallback(() => {
 
             playersAvaliableSteps = (isRewind) ? playersAvaliableSteps + 1 : playersAvaliableSteps - 1;
             
@@ -203,6 +219,7 @@ public class Unit : MonoBehaviour
 
             }
         });
+
         return s;
     }
 
@@ -220,10 +237,9 @@ public class Unit : MonoBehaviour
         return s;
     }
 
-    public Tween Finish()
+    public Tween Finish(UnityAction action)
     {
 
-        StateManager.instance.SetState(StateManager.State.GameEnded);
 
         Sequence s = DOTween.Sequence();
         s.SetId(this);
@@ -233,8 +249,9 @@ public class Unit : MonoBehaviour
         s.Append(this.transform.DOScale(0, 0.3f).SetEase(Ease.OutFlash));
         s.OnComplete(() => {
             isActing = false;
-            SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
-            TurnController.instance.ChangeTurn();
+            //  SpawnPlayer(LevelManager.instance.GetPlayerStartPosition(this));
+            // TurnController.instance.ChangeTurn();
+            action?.Invoke();
         });
 
         return s;
@@ -277,10 +294,11 @@ public class Unit : MonoBehaviour
             if (path.Count==0)
             {
                 Debug.Log($"Path is null");
-                break;
+                TurnController.instance.ChangeTurn();
+                return;
             }
 
-            int avaliableSteps = (TurnController.instance.GetAvaliableSteps() + 1 < path.Count)? TurnController.instance.GetAvaliableSteps() + 1 : path.Count;
+            int avaliableSteps = (playersAvaliableSteps + 1 < path.Count)? playersAvaliableSteps + 1 : path.Count;
             Debug.Log($"Avaliable Steps {avaliableSteps-1}");
 
             for (int i = 0; i < avaliableSteps; i++)
@@ -300,7 +318,12 @@ public class Unit : MonoBehaviour
         }
 
         await Task.Delay(2000);
-        TurnController.instance.ChangeTurn();
+
+        if (SpecialEventManager.instance.SpecialEvents.Count>0)
+        {
+            TurnController.instance.ChangeTurn();
+        }
+        
 
 
 
@@ -344,5 +367,10 @@ public class Unit : MonoBehaviour
     {
         TurnController.OnTurnChanged -= OnTurnChanged;
 
+    }
+
+    private void OnDestroy()
+    {
+        DOTween.Kill(this);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.Events;
+
 public class SpecialEvent: MonoBehaviour {
     public TMP_Text[] amountText;
     public RectTransform Container;

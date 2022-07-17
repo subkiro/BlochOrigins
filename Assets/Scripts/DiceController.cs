@@ -49,8 +49,10 @@ public class DiceController : MonoBehaviour
             dice = () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
 
         }
-        UnityAction DiceSpecial = player.SpecialDiceCounter==0 && Random.Range(0,100)<50?() => AnimateDice(player, isDiceSpecial: true, _OnComplete): () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
-        AnimateDice(player, isDiceSpecial: false, _OnComplete);
+
+        dice.Invoke();
+    //    UnityAction DiceSpecial = player.SpecialDiceCounter==0 && Random.Range(0,100)<50?() => AnimateDice(player, isDiceSpecial: true, _OnComplete): () => AnimateDice(player, isDiceSpecial: false, _OnComplete);
+    //    AnimateDice(player, isDiceSpecial: false, _OnComplete);
     }
     public void ThrowDicePlayer(Unit player, UnityAction _OnComplete)
     {
