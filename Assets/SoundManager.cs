@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource source;
 
-    private void OnStep(int arg0)
+    private void OnStep(Unit player)
     {
         source.PlayOneShot(step);
 
@@ -47,7 +47,7 @@ public class SoundManager : MonoBehaviour
 
     private void OnEnable()
     {
-        TurnController.OnStepExecuted += OnStep;
+        Unit.OnStepStarted += OnStep;
         StateManager.OnStateChanged += OnStateChanged;
         SpecialEventManager.OnEventClaimed += OnClaim;
     }
@@ -56,7 +56,8 @@ public class SoundManager : MonoBehaviour
 
     private void OnDisable()
     {
-        TurnController.OnStepExecuted -= OnStep;
+        Unit.OnStepStarted -= OnStep;
         StateManager.OnStateChanged -= OnStateChanged;
+        SpecialEventManager.OnEventClaimed -= OnClaim;
     }
 }

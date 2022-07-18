@@ -10,9 +10,9 @@ public class TurnController : MonoBehaviour
 
     [SerializeField] public Unit PlayerUnit;
     [SerializeField] public Unit NpcUnit;
-     private ActionRecorder _actionRecorder ;
+    private ActionRecorder _actionRecorder ;
     public static UnityAction<Unit> OnTurnChanged;
-    public static UnityAction<int> OnStepExecuted;
+    public static UnityAction<int,Unit> OnStepExecuted;
 
 
     private Unit m_currentTurnUnit;
@@ -31,26 +31,30 @@ public class TurnController : MonoBehaviour
     public void StartTurn(Unit player) {
 
         StateManager.instance.SetState(player.isNpc ? StateManager.State.NpcRound : StateManager.State.PlayerRound);
-        m_currentTurnUnit = player;
-        OnTurnChanged?.Invoke(m_currentTurnUnit);
-        ArrowIndicator.instance.Init(m_currentTurnUnit);
+
+        OnTurnChanged?.Invoke(player);
+        ArrowIndicator.instance.Init(player);
         _actionRecorder.Reset();
 
-        if (m_currentTurnUnit.isNpc) {
-            StartNpcMove();
+        if (player.isNpc) {
+            DG.Tweening.DOVirtual.DelayedCall(1, () => StartNpcMove());
         }
 
     }
+
     public void ChangeTurn()
     {
         if (m_currentTurnUnit == null) m_currentTurnUnit = PlayerUnit; // first start
-        else
-        m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit:PlayerUnit;
+        else {
+            m_currentTurnUnit = (m_currentTurnUnit.playerID == PlayerUnit.playerID) ? NpcUnit : PlayerUnit;
+        }
 
 
-        StateManager.instance.SetState(m_currentTurnUnit.isNpc ? StateManager.State.NpcRound : StateManager.State.PlayerRound);
 
-        DiceController.instance.ThrowDice(m_currentTurnUnit,()=> StartTurn(m_currentTurnUnit));
+        DiceController.instance.ThrowDice(m_currentTurnUnit, () =>
+        {
+            StartTurn(m_currentTurnUnit);
+        });
 
     }
 
@@ -99,15 +103,19 @@ public class TurnController : MonoBehaviour
     }
     public int GetAvaliableSteps() {
         int counter = DiceController.instance.DiceResult - GetActionCounterResults();
-        Debug.Log("StepsLeft: " + counter);
+      
         return counter;
     }
+
     public Unit GetCurrentUnit() => m_currentTurnUnit;
+    public Unit GetOppositeUnit() => (m_currentTurnUnit.isNpc)? PlayerUnit: NpcUnit;
     public bool IsNpc(Unit player) {
         return (player.playerID != PlayerUnit.playerID);
     }
     public void OnMove(Tools.Directions direction)
     {
+        if (m_currentTurnUnit == null) return;
+
         if (m_currentTurnUnit.CanPlayerMove(direction) && GetAvaliableSteps()>0) {
            
             var action = new MoveAction(m_currentTurnUnit, direction);
@@ -122,7 +130,7 @@ public class TurnController : MonoBehaviour
 
 
             _actionRecorder.Rewind();
-            OnStepExecuted?.Invoke(GetActionCounterResults());
+            OnStepExecuted?.Invoke(GetActionCounterResults(), m_currentTurnUnit);
         
     }
     public int GetActionCounterResults() {

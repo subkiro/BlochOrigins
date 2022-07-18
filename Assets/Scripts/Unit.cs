@@ -17,6 +17,7 @@ public class Unit : MonoBehaviour
     private bool isActing;
     public int playersAvaliableSteps = 0;
     public int SpecialDiceCounter = 2;
+    public static UnityAction<Unit> OnStepStarted,OnStepFinished;
     public void Init(string _playerID,string _playerName,Transform _modelTransform,bool _isNPC)
     {
         this.playerID = _playerID;
@@ -28,7 +29,7 @@ public class Unit : MonoBehaviour
     #region PUBLIC FUNCTIONS
     public void OnStepFinish(bool isRewind)
     {
-        TurnController.OnStepExecuted?.Invoke(playersAvaliableSteps);
+        TurnController.OnStepExecuted?.Invoke(this.isNpc? playersAvaliableSteps: TurnController.instance.GetAvaliableSteps() ,this);
 
         GridObject gridObject = LevelManager.instance.grid.GetGridObject((int)this.transform.localPosition.x, (int)this.transform.localPosition.z);
         if (gridObject == null) { FallInSpace(); return; }
@@ -48,6 +49,7 @@ public class Unit : MonoBehaviour
                 break;
             case Tools.FloorType.WALKABLE:
             case Tools.FloorType.START:
+                
                 gridObject.GetPlate().ToggleColor(Color.red, isRewind);
                 bool NoMoreEvents = SpecialEventManager.instance.ClaimSpecialEvent(this, gridObject.GetPlate());
                 if (NoMoreEvents) {
@@ -162,6 +164,10 @@ public class Unit : MonoBehaviour
             DOTween.Kill(this, true);
         }
 
+        OnStepStarted?.Invoke(this);
+
+
+
         isActing = true;
 
         Vector3 movePosTarget = direction == Tools.Directions.FORWORD ? Vector3.forward :
@@ -186,10 +192,15 @@ public class Unit : MonoBehaviour
         Unit opponent = this.playerID == TurnController.instance.PlayerUnit.playerID ? TurnController.instance.NpcUnit : TurnController.instance.PlayerUnit;
         bool isOverlapingPlayers = (finalPosition == opponent.transform.localPosition);
 
+        Sequence s = DOTween.Sequence();
+        if (DiceController.instance.DiceResult-1 == TurnController.instance.GetAvaliableSteps() && !isNpc && opponent.transform.localPosition==this.transform.localPosition) {
+            Debug.Log("Extreme case");
+            s.Join(opponent.PlayerModel.DOLocalMoveY(0, 0.5f).SetDelay(moveSpeed));
+        }
 
 
 
-        if (isRewind) {
+            if (isRewind) {
             OnStepFinish(isRewind);
             if (isNpc)
             {
@@ -201,7 +212,7 @@ public class Unit : MonoBehaviour
             }
         }
 
-        Sequence s = DOTween.Sequence();
+       
 
         s.SetId(this);
         s.Join(this.transform.DOMove(movePosTarget, moveSpeed).SetRelative().SetEase(Ease.InFlash));
@@ -209,15 +220,25 @@ public class Unit : MonoBehaviour
         s.Join(PlayerModel.DOLocalJump(isOverlapingPlayers ? new Vector3(0, opponent.PlayerModel.localScale.y, 0) : Vector3.zero, 1, 1, moveSpeed).SetEase(Ease.InFlash));
         s.Join(PlayerModel.DOPunchScale(new Vector3(0, 1, 0), moveSpeed, 1, .2f).SetEase(Ease.InFlash));
         s.Append(PlayerModel.DOPunchScale(new Vector3(0, -.3f, 0), moveSpeed / 2, 1, .2f).SetEase(Ease.InFlash));
-        s.AppendCallback(() => {
+        s.OnComplete(() => {
 
-            playersAvaliableSteps = (isRewind) ? playersAvaliableSteps + 1 : playersAvaliableSteps - 1;
+            if (isRewind) {
+
+                playersAvaliableSteps = this.isNpc ? playersAvaliableSteps + 1 : TurnController.instance.GetAvaliableSteps();
+            }
+            else {
+                playersAvaliableSteps = this.isNpc ? playersAvaliableSteps - 1 : TurnController.instance.GetAvaliableSteps();
+
+            }
+           
             
             isActing = false;
             if (!isRewind) {
                 OnStepFinish(isRewind);
 
             }
+
+            OnStepFinished?.Invoke(this);
         });
 
         return s;
@@ -294,12 +315,15 @@ public class Unit : MonoBehaviour
             if (path== null || path.Count==0)
             {
                 Debug.Log($"Path is null");
-                TurnController.instance.ChangeTurn();
+                if (SpecialEventManager.instance.SpecialEvents.Count > 0)
+                {
+                    TurnController.instance.ChangeTurn();
+                }
                 return;
             }
 
             int avaliableSteps = (playersAvaliableSteps + 1 < path.Count)? playersAvaliableSteps + 1 : path.Count;
-            Debug.Log($"Avaliable Steps {avaliableSteps-1}");
+           
 
             for (int i = 0; i < avaliableSteps; i++)
             {
@@ -353,7 +377,7 @@ public class Unit : MonoBehaviour
 
             direction = Tools.Directions.FORWORD;
         }
-        Debug.Log($"player currentPos: {fromX},{fromY} -- targetPos: {toX},{toY}  direction: {direction}");
+      
         return direction;
     }
    

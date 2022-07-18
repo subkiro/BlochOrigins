@@ -22,7 +22,7 @@ public  class LevelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        DOTween.SetTweensCapacity(500, 50);
+        DOTween.SetTweensCapacity(1250, 100);
     }
     // Start is called before the first frame update
     public void GenerateLevel(LevelSO level,List<FloorPlateSO> AllPlates)
@@ -55,7 +55,7 @@ public  class LevelManager : MonoBehaviour
         int y = level.Y;
 
         GenericGrid<GridObject> tmpGrid = new GenericGrid<GridObject>(x, y, 10f, 10f, new Vector3(-x / 2, -y / 2, 0), (GenericGrid<GridObject> g, int x, int y) => new GridObject(g, x, y));
-        Debug.Log($"X: {tmpGrid.GridWidth()}, Y: {tmpGrid.GridHeight()}");
+      
         return tmpGrid;
     }
     public GenericGrid<GridObject> FillGrid(GenericGrid<GridObject> grid, LevelSO level)
@@ -63,7 +63,7 @@ public  class LevelManager : MonoBehaviour
 
         
         char[,] lvl = level.GetLevelArray();
-        Debug.Log($"lvl array X: {lvl.GetLength(0)}");
+       
 
         List<FloorPlateSO> plates = m_AllPlates;
 
@@ -74,7 +74,7 @@ public  class LevelManager : MonoBehaviour
             for (int y = 0; y < level.Y; y++)
             {
                 char plateID = lvl[x,y];
-                Debug.Log(plateID);
+               
 
                 FloorPlateSO plateSO = plates.FirstOrDefault(x => x.ID == plateID.ToString());
                 grid.GetGridObject(x, y).SetPlate(plateSO);
@@ -115,7 +115,6 @@ public  class LevelManager : MonoBehaviour
     public List<GridObject> FindPath(int startX, int startY, int endX, int endY) {
 
 
-        Debug.Log($"Grid Width: {grid.GridWidth()}, grid Height: {grid.GridHeight()}");
 
 
         GridObject startNode = grid.GetGridObject(startX,startY);

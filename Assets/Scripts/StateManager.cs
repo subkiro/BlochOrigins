@@ -7,7 +7,7 @@ public class StateManager : MonoBehaviour
 {
     public static StateManager instance;
     public static event Action<State> OnStateChanged;
-    private State CurrentState;
+    public State CurrentState;
 
 
     private void Awake()

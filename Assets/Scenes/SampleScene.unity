@@ -1298,6 +1298,7 @@ MonoBehaviour:
   MessageDice: {fileID: 5542488878243829931, guid: 6acf911a9980e6e44b0ee1331978b10c, type: 3}
   MessageMainMenu: {fileID: 8442848911247011881, guid: b062f9215cb804967b4b4cff6078853b, type: 3}
   MessageGameEnd: {fileID: 8442848911247011881, guid: f73fab7365c614b598d2f2a29fd894d4, type: 3}
+  MessageYESorNo: {fileID: 5542488878243829931, guid: fedfb2e237689da40998f220e1bcd5a8, type: 3}
 --- !u!4 &712043838
 Transform:
   m_ObjectHideFlags: 0
@@ -2146,6 +2147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf25db678f424a3da3d5927a5baffd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentState: 0
 --- !u!1 &1202195543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,6 +2229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76de1a4e3f766421ab48754fbd3aadc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  espcapePressed: 0
 --- !u!4 &1217287925
 Transform:
   m_ObjectHideFlags: 0

@@ -14,15 +14,18 @@ public class FinishTurnButton : MonoBehaviour
     {
         //init finish step button
         Button.onClick.RemoveAllListeners();
-        Button.onClick.AddListener(TurnController.instance.ChangeTurn);
+        Button.onClick.AddListener(FinishTurn);
     }
-    public void OnStepExecuted(int stepCounter)
+
+
+    public void OnStepExecuted(int stepCounter, Unit player)
     {
-        if (!TurnController.instance.GetCurrentUnit().isNpc)
+        if (!player.isNpc)
         {
 
             if (TurnController.instance.GetAvaliableSteps() == 0)
             {
+
                 ShowFinishTurnButton(true);
 
             }
@@ -33,6 +36,11 @@ public class FinishTurnButton : MonoBehaviour
 
         }
     }
+
+    public void FinishTurn() {
+        Button.interactable = false;
+        TurnController.instance.ChangeTurn();
+    }
     public void OnStateChange(StateManager.State state)
     {
         ShowFinishTurnButton(false);
@@ -42,8 +50,8 @@ public class FinishTurnButton : MonoBehaviour
         tween.Kill();
         if (show)
         {
-
-           tween=this.Container.DOPivotY(1,.5f).SetEase(Ease.OutBack).SetDelay(.5f);
+            Button.interactable = true;
+            tween = this.Container.DOPivotY(1, .5f).SetEase(Ease.OutBack).SetDelay(.5f) ;
         }
         else
         {

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using System;
+
 public class MessageYesOrNo : PopUp
 {
     public RectTransform MainInfoUI;
@@ -118,4 +120,23 @@ public class MessageYesOrNo : PopUp
         }
     }
 
+
+    private void OnEnable()
+    {
+        StateManager.OnStateChanged += OnStateChanged;
+    }
+    private void OnDisable()
+    {
+        StateManager.OnStateChanged -= OnStateChanged;
+    }
+    private void OnStateChanged(StateManager.State state)
+    {
+        switch (state)
+        {
+    
+            case StateManager.State.GameEnded:
+                OnComplete?.Invoke();
+                break;
+        }
+    }
 }

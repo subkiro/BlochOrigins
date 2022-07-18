@@ -27,17 +27,18 @@ public class DiceController : MonoBehaviour
 
     public void ThrowDice(Unit player, UnityAction _OnComplete) {
         StateManager.instance.SetState(StateManager.State.Dice);
-        if (TurnController.instance.IsNpc(player))
+
+        if (player.isNpc)
         {
             ThrowDiceNpc(player, _OnComplete);
         }
         else {
             ThrowDicePlayer(player, _OnComplete);
            }
-      
+
     }
 
-    
+
     public void ThrowDiceNpc(Unit player,UnityAction _OnComplete) {
         UnityAction dice;
         if (player.SpecialDiceCounter == 0 && Random.Range(0, 100) < 90)
@@ -67,7 +68,6 @@ public class DiceController : MonoBehaviour
     public Sequence AnimateDice(Unit player,bool isDiceSpecial, UnityAction _OnComplete) {
 
         if (isDiceSpecial) player.ResetSpecialDice();
-        StateManager.instance.SetState(StateManager.State.Dice);
         Transform dice = (isDiceSpecial) ? diceSpecial.transform : diceNormal.transform;
 
        
@@ -81,8 +81,10 @@ public class DiceController : MonoBehaviour
         s.AppendInterval(.5f);
         s.Append(dice.transform.DOScale(Vector3.zero, 0.3f));
         s.Append(DiceNumber.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack));
-       
-        s.OnComplete(() => _OnComplete?.Invoke());
+
+        s.OnComplete(() => {
+           _OnComplete?.Invoke();
+        }); 
 
         return s;
     }
@@ -119,7 +121,7 @@ public class DiceController : MonoBehaviour
         }
     }
 
-    public void UpdateDiceText(int value) {
+    public void UpdateDiceText(int value,Unit player) {
         DiceNumber.text = $"{value}/{DiceResult}";
     }
    
@@ -127,10 +129,26 @@ public class DiceController : MonoBehaviour
     private void OnEnable()
     {
         TurnController.OnStepExecuted += UpdateDiceText;
+        StateManager.OnStateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(StateManager.State state)
+    {
+        switch (state)
+        {
+
+            case StateManager.State.GameStarted:
+            case StateManager.State.GameEnded:
+                DiceNumber.text = "";
+                break;
+
+         
+        }
     }
 
     private void OnDisable()
     {
         TurnController.OnStepExecuted -= UpdateDiceText;
+        StateManager.OnStateChanged -= OnStateChanged;
     }
 }

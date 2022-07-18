@@ -13,6 +13,6 @@ public class PrefabManager: MonoBehaviour
     public GameObject MessageDice;
     public GameObject MessageMainMenu;
     public GameObject MessageGameEnd;
-
+    public GameObject MessageYESorNo;
     #endregion
 }

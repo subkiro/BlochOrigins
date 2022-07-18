@@ -17,12 +17,11 @@ public class GameManager : MonoBehaviour
     public static UnityAction<Unit> OnPlayerSelected;
 
     private int SelectedPlayerIndex;
+    private int StageSelected = 0;
     private Unit SelectedPlayer;
+
+    bool isShowing = false;
     // Start is called before the first frame update
-
-
-
-
 
     public static GameManager instance;
     private void Awake()
@@ -36,26 +35,38 @@ public class GameManager : MonoBehaviour
         SetUpBase();
     }
 
-    // Update is called once per frame
+
     private void SetupGame()
     {
         StateManager.instance.SetState(StateManager.State.GameStarted);
        if(SelectedPlayer!=null)  Destroy(SelectedPlayer);
         InGamePanelUI.DOFade(1, .5f).SetDelay(2);
-        InitLevel(0);
+        InitLevel(StageSelected);
         SpecialEventManager.instance.InitEvents(LevelManager.instance.grid);
         InitTurnController(InitPlayers(SelectedPlayerIndex, false), InitPlayers(Random.Range(0,5),true));
         DG.Tweening.DOVirtual.DelayedCall(2, () => TurnController.instance.ChangeTurn());
 
         
     }
+    public void SetUpBase()
+    {
+        if (SelectedPlayer != null) Destroy(SelectedPlayer.gameObject);
+       
+
+        StageSelected = 0;  
+        StateManager.instance.SetState(StateManager.State.Menu);
+        ShowPlayer(0);
+        InGamePanelUI.DOFade(0, .5f);
+        MessageMainMenu message = PopUpManager.instance.Show<MessageMainMenu>(PrefabManager.Instance.MessageMainMenu, withBlur: false);
+
+    }
+
 
 
     void InitLevel(int level) {
 
         LevelManager.instance.GenerateLevel(listOfObjects.AllLevels[level], listOfObjects.AllPlates);
     }
-
     Unit  InitPlayers(int playerIndex, bool isNPC = false) {
 
 
@@ -77,7 +88,6 @@ public class GameManager : MonoBehaviour
 
         return player;
     }
-
     void InitTurnController(Unit Player, Unit NpcPlayer) {
 
         if(Player ==null || NpcPlayer==null ) { Debug.Log("InitTurnController - Some of the player is NULL"); return; }
@@ -85,18 +95,9 @@ public class GameManager : MonoBehaviour
     }
 
 
-
-
-    public void SetUpBase() {
-        StateManager.instance.SetState(StateManager.State.Menu);
-        ShowPlayer(0);
-        InGamePanelUI.DOFade(0, .5f);
-        MessageMainMenu message = PopUpManager.instance.Show<MessageMainMenu>(PrefabManager.Instance.MessageMainMenu, withBlur: false);
-
+    public int SelectStage(int stageCounter) {
+       return StageSelected = (StageSelected + stageCounter > listOfObjects.AllLevels.Count) ? 0 : (StageSelected + stageCounter < 0) ? listOfObjects.AllLevels.Count - 1 : StageSelected + stageCounter;
     }
-
-
-
     public void SelectRight() {
         if (isShowing) return;
         ++SelectedPlayerIndex;
@@ -113,6 +114,37 @@ public class GameManager : MonoBehaviour
         Destroy(SelectedPlayer.gameObject);
         SetupGame();
     }
+
+    public async void ShowPlayer(int playerIndex)
+    {
+
+
+        isShowing = true;
+
+
+
+
+        if (SelectedPlayer != null)
+        {
+            Task task = SelectedPlayer.transform.DOScale(0, 0.3f).SetEase(Ease.InBack).SetId(this).AsyncWaitForCompletion();
+            await task;
+            Destroy(SelectedPlayer.gameObject);
+
+
+        }
+
+
+        PlayerSO playerData = listOfObjects.AllPlayerModels[playerIndex];
+        Unit player = playerData.CreatePlayer(Base, false);
+        player.transform.DORotate(new Vector3(0, -180, 0), 0);
+        SelectedPlayer = player;
+
+        Task task2 = SelectedPlayer.transform.DOScale(1, 0.5f).From(0).SetEase(Ease.InBack).SetId(this).AsyncWaitForCompletion();
+        await task2;
+
+        isShowing = false;
+        OnPlayerSelected?.Invoke(SelectedPlayer);
+    }
     public void GameEnded() {
 
 
@@ -122,40 +154,6 @@ public class GameManager : MonoBehaviour
 
 
     }
-
-
-    
-
-    bool isShowing = false;
-    public async void ShowPlayer(int playerIndex) {
-
-
-        isShowing = true;
-        
-       
-
-        
-        if (SelectedPlayer != null) {
-           Task task =  SelectedPlayer.transform.DOScale(0, 0.3f).SetEase(Ease.InBack).SetId(this).AsyncWaitForCompletion();
-           await task;
-           Destroy(SelectedPlayer.gameObject);
-
-
-        }
-
-        
-            PlayerSO playerData = listOfObjects.AllPlayerModels[playerIndex];
-            Unit player = playerData.CreatePlayer(Base, false);
-            player.transform.DORotate(new Vector3(0, -180, 0), 0);
-            SelectedPlayer = player;
-
-           Task task2 = SelectedPlayer.transform.DOScale(1, 0.5f).From(0).SetEase(Ease.InBack).SetId(this).AsyncWaitForCompletion();
-        await task2;
-
-        isShowing = false;
-        OnPlayerSelected?.Invoke(SelectedPlayer);
-    }
-
 
 
     public void OnStateChanged(StateManager.State state) {

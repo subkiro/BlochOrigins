@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
     public static UnityAction<Tools.Directions> OnMove;
-  
+    public bool espcapePressed = false;
 
     private void Awake()
     {
@@ -24,21 +26,24 @@ public class InputManager : MonoBehaviour
                     break;
                 case StateManager.State.PlayerRound:
                     GameControlMovements();
+                    EscapeCheck();
                     break;
                 case StateManager.State.NpcRound:
+                    EscapeCheck();
                     break;
                 case StateManager.State.GameStarted:
                     break;
                 case StateManager.State.GameEnded:
                     break;
                 case StateManager.State.Dice:
+                    EscapeCheck();
                     break;          
             }
 
 
 
 
-
+        
 
 
 
@@ -66,11 +71,11 @@ public class InputManager : MonoBehaviour
 
         
         private void GameControlMovements()
-        {
+    {
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-                OnMove?.Invoke(Tools.Directions.FORWORD);
+            OnMove?.Invoke(Tools.Directions.FORWORD);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -94,8 +99,29 @@ public class InputManager : MonoBehaviour
         {
             TurnController.instance.Rewind();
         }
+
+       
     }
 
+    private void EscapeCheck()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!espcapePressed)
+            {
+                espcapePressed = true;
+                MessageYesOrNo message = PopUpManager.instance.Show<MessageYesOrNo>(PrefabManager.Instance.MessageYESorNo, withBlur: false);
+                message.SetData(Tite: "Exit", Message: "Do you want to leave the game?", () =>
+                {
+                    SceneManager.LoadScene(0);
+                    espcapePressed = false;
+                }, () =>
+                {
+                    espcapePressed = false;
+                });
+            }
+        }
+    }
 
 
 }

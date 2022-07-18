@@ -96,16 +96,16 @@ public class ArrowIndicator : MonoBehaviour
         }
     }
 
-    public void OnStepExecuted(int stepCounter) {
+    public void OnStepExecuted(int stepCounter, Unit player) {
 
-        if (TurnController.instance.GetCurrentUnit() == null) {
+        if (player == null) {
             this.transform.DOScale(0, 0f).SetId(this);
             return;
         }
         
-        if (!TurnController.instance.GetCurrentUnit().isNpc) {
+        if (!player.isNpc) {
 
-            Debug.Log(TurnController.instance.GetCurrentUnit().playersAvaliableSteps);
+            
             if (TurnController.instance.GetAvaliableSteps() == 0)
             {
                 this.transform.DOScale(0, .5f).SetId(this);

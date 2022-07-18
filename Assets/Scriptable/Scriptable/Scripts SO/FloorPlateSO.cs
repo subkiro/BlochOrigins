@@ -20,14 +20,16 @@ public class FloorPlateSO : ScriptableObject
         plate.Init(this, grid, x,y);
 
 
-      
 
-        if (GameManager.instance.useDebug) {
+
+        if (GameManager.instance.useDebug)
+        {
             GameObject debuText = Instantiate(DebuText, tmp.transform);
             debuText.transform.localPosition = new Vector3(0, 0, 0.01f);
             debuText.transform.localScale = new Vector3(0.1f, -0.1f, 0.1f);
             debuText.GetComponent<TMPro.TMP_Text>().text = $"{x},{y}";
         }
+       
         return plate;
     }
 
