@@ -35,8 +35,8 @@ public class CameraManager : MonoBehaviour
                  SetCameraState(CameraStates.TopDown);
             break;
             case StateManager.State.Dice:
-                GamePlay_Normal.Follow = TurnController.instance.GetCurrentUnit().transform;
-                GamePlay_Normal.LookAt = TurnController.instance.GetCurrentUnit().transform;
+                if (TurnController.instance.GetCurrentUnit() != null) GamePlay_Normal.Follow = TurnController.instance.GetCurrentUnit().transform;
+                if (TurnController.instance.GetCurrentUnit() != null) GamePlay_Normal.LookAt = TurnController.instance.GetCurrentUnit().transform;
            
                 break;
             case StateManager.State.Menu:

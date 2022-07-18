@@ -291,7 +291,7 @@ public class Unit : MonoBehaviour
 
             List<GridObject> path =  TurnController.instance.GetNearestEventPath(this);
 
-            if (path.Count==0)
+            if (path== null || path.Count==0)
             {
                 Debug.Log($"Path is null");
                 TurnController.instance.ChangeTurn();

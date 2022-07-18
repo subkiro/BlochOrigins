@@ -73,6 +73,7 @@ public class TurnController : MonoBehaviour
             if (path == null)
             {
                 Debug.Log($"Path is null");
+                ChangeTurn();
                 return null;
             }
 
