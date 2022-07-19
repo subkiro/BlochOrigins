@@ -17,53 +17,29 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (StateManager.instance.GetState() == StateManager.State.PlayerRound || StateManager.instance.GetState() == StateManager.State.NpcRound)
 
 
             switch (StateManager.instance.GetState())
             {
                 case StateManager.State.Menu:
+                    EscapeCheck(true);
                     break;
                 case StateManager.State.PlayerRound:
                     GameControlMovements();
-                    EscapeCheck();
+                    EscapeCheck(false);
                     break;
                 case StateManager.State.NpcRound:
-                    EscapeCheck();
+                    EscapeCheck(false);
                     break;
                 case StateManager.State.GameStarted:
                     break;
                 case StateManager.State.GameEnded:
                     break;
                 case StateManager.State.Dice:
-                    EscapeCheck();
+                
                     break;          
             }
 
-
-
-
-        
-
-
-
-
-        //Test
-
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-
-            CameraManager.instance.SetCameraState(CameraManager.CameraStates.TopDown);
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            CameraManager.instance.SetCameraState(CameraManager.CameraStates.GamePlay_Normal);
-        }
-
-       
 
     }
 
@@ -103,9 +79,9 @@ public class InputManager : MonoBehaviour
        
     }
 
-    private void EscapeCheck()
+    private void EscapeCheck(bool Quit)
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !Quit)
         {
             if (!espcapePressed)
             {
@@ -120,6 +96,11 @@ public class InputManager : MonoBehaviour
                     espcapePressed = false;
                 });
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && Quit)
+        {
+            Application.Quit(); 
+
         }
     }
 
