@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
 
 
     public int SelectStage(int stageCounter) {
-       return StageSelected = (StageSelected + stageCounter > listOfObjects.AllLevels.Count) ? 0 : (StageSelected + stageCounter < 0) ? listOfObjects.AllLevels.Count - 1 : StageSelected + stageCounter;
+       return StageSelected = (StageSelected + stageCounter >= listOfObjects.AllLevels.Count) ? 0 : (StageSelected + stageCounter < 0) ? listOfObjects.AllLevels.Count - 1 : StageSelected + stageCounter;
     }
     public void SelectRight() {
         if (isShowing) return;

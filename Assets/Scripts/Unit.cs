@@ -84,8 +84,8 @@ public class Unit : MonoBehaviour
     }
 
     public bool CanPlayerMoveAllDirections() {
-
-        if (CanPlayerMove(Tools.Directions.FORWORD) || CanPlayerMove(Tools.Directions.BACK) || CanPlayerMove(Tools.Directions.LEFT) || CanPlayerMove(Tools.Directions.RIGHT))
+        int rewindsAvaliable = (this.isNpc) ? GameManager.instance.playerInfoNpc.Rewinds : GameManager.instance.playerInfo.Rewinds;
+        if (CanPlayerMove(Tools.Directions.FORWORD) || CanPlayerMove(Tools.Directions.BACK) || CanPlayerMove(Tools.Directions.LEFT) || CanPlayerMove(Tools.Directions.RIGHT) || rewindsAvaliable>0)
         {
             return true;
         }
