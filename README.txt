@@ -8,3 +8,14 @@ Be careful,  the one who collect more gold and diamonds wins no matter who step 
 3. whhe you collect Rewinds then you have ability to rewind your movements. so you have a chance to collect more :)
 4. if you fall in empty tile, then you are respawn to your initial position. 
 
+
+
+
+*Used in project
+-Events
+-Scriptables
+-Command pattern
+-Singleton pattern
+-Observer pattern
+
+
